@@ -1,0 +1,13 @@
+.App .container.card .row .col-4 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.App .container.card .row .col-sm-8 textarea {
+    width: 80%;
+    height: 100px;
+}
+
+.App .container.card .row .col-sm-6 button {
+    width: 100px;
+}

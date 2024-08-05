@@ -1,3 +1,4 @@
+import "../css/MsgPage.css"
 import React,{Component} from "react";
 import Msg from "./my_msg";
 import SmartInputBox from "./smart_input";
@@ -56,20 +57,20 @@ class MsgPage extends Component {
         out.push(
         <div className='container card'>
             <div className='row'>
-            <div className='col-sm-2'>
-                <label>Write your thoughts here...</label>
-            </div>
-            <div className='col-sm-4'>
-                <SmartInputBox  type="text" id="reply-content" name="content"/>
-            </div>
-            </div>
-            <div className='row'>
-            <div className='col-sm-2'>
-                <button onClick={this.onSendReply}>Send Reply</button>
-            </div>
-            <div className='col-sm-2'>
-                <button onClick={() => this.onLeaveReplyCenter()}>Leave</button>
-            </div>
+                <div className='col-sm-4'>
+                    <label>Write your thoughts here...</label>
+                </div>
+                <div className='col-sm-8'>
+                    <SmartInputBox  type="text" id="reply-content" name="content"/>
+                </div>
+                </div>
+                <div className='row'>
+                <div className='col-sm-6'>
+                    <button onClick={this.onSendReply}>Send Reply</button>
+                </div>
+                <div className='col-sm-6'>
+                    <button onClick={() => this.onLeaveReplyCenter()}>Leave</button>
+                </div>
             </div>
         </div>
         )

@@ -1,0 +1,49 @@
+.App ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+/* 
+.App ul li{
+} */
+
+.App .container.card .row .col-2 {
+    padding: 5px;
+    border-radius: 7px;
+}
+
+
+.App .container-fluid.App-main .container.card {
+    margin-top: 15px;
+    padding: 10px;
+}
+
+
+.App .container-fluid.App-main .container.card .row .col-2 a.btn.btn-secondary{
+    background-color:yellowgreen;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.App .container.card .row label{
+    font-size: 20px;
+    /*bold*/
+    font-weight: bold;
+    margin: 4px 2px;
+    margin-left: 8px;
+}
+
+.App .container.card .row p{
+    text-align: left;
+}
+
+.App .container.card .row .col-7 {
+    padding: 0;
+    text-align: left;
+}

@@ -10,7 +10,11 @@ class DashBoard extends Component {
         this.state = {
             header: props.header,
             messages: undefined,
-            msg_btn_type: props.msg_btn_type
+            msg_btn_type: props.msg_btn_type,
+        }
+        this.show_reply_num = true;
+        if(!props.show_reply_num){
+            this.show_reply_num = false;
         }
     }
 

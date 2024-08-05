@@ -13,7 +13,7 @@ class SmartInputBox extends Component {
 
     render = () => {
         return (
-            <input type={this.state.type} name={this.state.name} id={this.state.id} value={this.state.value} onChange={this.onChange}/>
+            <textarea type={this.state.type} name={this.state.name} id={this.state.id} value={this.state.value} onChange={this.onChange}/>
         )
     }
 }

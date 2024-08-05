@@ -111,11 +111,7 @@ class App extends Component {
 // ############### LOGIN PAGE ################
 
   render_login = () => {
-    return (
-      <div className="container-fluid App-main">
-          <LoginPortal props={this.state.login_portal_props.props}></LoginPortal>
-      </div>
-    )
+    return <LoginPortal props={this.state.login_portal_props.props}></LoginPortal>
   }
 
   onNotifyLogin = (data) => {
@@ -141,34 +137,40 @@ class App extends Component {
       this.switchPage(AtPageEnum.LOGIN);
       return;
     }
-    return (
-      <div className="container-fluid App-main">
-          <h1> Welcome, <special>{this.state.login_portal_props.username}</special> </h1>
-          <div className='row firstrow'>
-            <div className='col-sm-6'>
-              <a className="btn btn-primary" onClick={() => {this.switchPage(AtPageEnum.MYSENT)}}> My Sent Messages </a>
-            </div>
-            <div className='col-sm-6'>
-              <a className="btn btn-primary" onClick={() => {this.switchPage(AtPageEnum.MYREPLY)}}> Replied Messeges </a>
-            </div>
-          </div>
-          <div className='row secondrow'>
-            <div className='col-sm-12'>
-              <a className="btn btn-primary" onClick={() => {this.state.editor_page_msg = new MsgConfig();this.switchPage(AtPageEnum.EDIT)}}>Compose or Edit Message</a>
-            </div>
-          </div>
-          <div className='row thirdrow d-flex align-items-center'>
-            <div className='col-sm-8'>
-              <div className='container'>
-                <a className='btn btn-primary' onClick={() => {this.switchPage(AtPageEnum.MSG)}}>
-                  <img src="./main-page.png" alt="bottle"/>
-                </a><br/>
-                <label> Click To Get New Messages </label>
-              </div>
-            </div>
-          </div>
+    var ans = []
+    ans.push (
+      <h1> Welcome, <special>{this.state.login_portal_props.username}</special> </h1>
+    ) // title
+    ans.push(
+      <div className='row firstrow'>
+        <div className='col-sm-6'>
+          <a className="btn btn-primary" onClick={() => {this.switchPage(AtPageEnum.MYSENT)}}> My Sent Messages </a>
+        </div>
+        <div className='col-sm-6'>
+          <a className="btn btn-primary" onClick={() => {this.switchPage(AtPageEnum.MYREPLY)}}> Replied Messeges </a>
+        </div>
       </div>
-    )
+    ) // first buttons
+    ans.push(
+      <div className='row secondrow'>
+        <div className='col-sm-12'>
+          <a className="btn btn-primary" onClick={() => {this.state.editor_page_msg = new MsgConfig();this.switchPage(AtPageEnum.EDIT)}}>Compose or Edit Message</a>
+        </div>
+      </div>
+    ) // edit message button
+    ans.push(
+      <div className='row thirdrow d-flex align-items-center'>
+        <div className='col-sm-8'>
+          <div className='container'>
+            <a className='btn btn-primary' onClick={() => {this.switchPage(AtPageEnum.MSG)}}>
+              <img src="./main-page.png" alt="bottle"/>
+            </a><br/>
+            <label> Click To Get New Messages </label>
+          </div>
+        </div>
+      </div>
+    ) // New Message Logo.
+    return ans
   }
 
 
@@ -261,7 +263,7 @@ class App extends Component {
   }
 
   render_edit_unpublished = () => {
-    return <DashBoard msg_btn_type="edit" header="Your Unsent Messages"/>
+    return <DashBoard msg_btn_type="edit" header="Your Unsent Messages" show_reply_num={false}/>
   }
 
 // ############### FINAL RENDER ################
@@ -271,9 +273,7 @@ class App extends Component {
     // console.log('Method',this.state.at_page)
     // console.log('promise loading?',this.state.promise_status)
     var content = (
-        <div className="container-fluid App-main">
-          <h1> This page is not implemented. </h1>
-        </div>
+        <h1> This page is not implemented. </h1>
     )
     if(this.state.at_page in this.render_methods){
       content = this.render_methods[this.state.at_page]();
@@ -297,7 +297,9 @@ class App extends Component {
             <a className="btn btn-primary" onClick={() => this.switchPage(AtPageEnum.MAIN)}>Go Home</a>
           </div>
         </header>
-        {content}
+        <div className="container-fluid App-main">
+          {content}
+        </div>
       </div>
     )
   }

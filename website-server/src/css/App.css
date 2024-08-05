@@ -47,6 +47,10 @@
   margin-bottom: 20px;
 }
 
+.App-main a.btn.btn-primary {
+  color:white
+}
+
 .App-link {
   color: #61dafb;
 }

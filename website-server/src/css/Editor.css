@@ -1,0 +1,9 @@
+.container-fluid.App-main .row .col-sm-10 textarea {
+    width: 80%;
+    height: 100px;
+}
+
+.container-fluid.App-main .row .col-sm-3 button {
+    width: 100px;
+    border-radius: 7px;
+}

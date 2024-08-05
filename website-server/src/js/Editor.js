@@ -1,3 +1,4 @@
+import "../css/Editor.css"
 import React,{Component} from "react";
 import Msg, {MsgConfig} from "./my_msg";
 import SmartInputBox from "./smart_input";
@@ -48,21 +49,21 @@ class Editor extends Component{
                   <div className='col-sm-2'>
                     <label>Content:</label>
                   </div>
-                  <div className='col-sm-4'>
+                  <div className='col-sm-10'>
                     <SmartInputBox  type="text" id="content" name="content" value={this.state.embed_msg.content}/>
                   </div>
                 </div>
                 <div className='row'>
-                  <div className='col-sm-2'>
+                  <div className='col-sm-3'>
                     <button onClick={() => this.onClickPublish()}>Publish as bottle</button>
                   </div>
-                  <div className='col-sm-2'>
+                  <div className='col-sm-3'>
                     <button onClick={() => this.onClickSave()}>Save</button>
                   </div>
-                  <div className='col-sm-2'>
+                  <div className='col-sm-3'>
                     <button onClick={() => this.onClickDiscard()}>Discard Change</button>
                   </div>
-                  <div className='col-sm-2'>
+                  <div className='col-sm-3'>
                     <button onClick={() => this.onClickDelete()}>Delete</button>
                   </div>
                 </div>
