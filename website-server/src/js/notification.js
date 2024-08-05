@@ -2,6 +2,10 @@ class NotificationEnum {
     static NOTIFY_LOGIN = "NOTIFY_LOGIN";
     static EDIT_MSG = "EDIT_MSG";
     static VIEW_MSG = "VIEW_MSG";
+    static BACK_TO_MAIN = "BACK_TO_MAIN";
+    static TO_UNPUBLISHED_PAGE = "TO_UNPUBLISHED_PAGE";
+    static DASHBOARD_LOADED = "DASHBOARD_LOADED";
+    static MSG_PAGE_LOADED = "MSG_PAGE_LOADED";
 }
 
 let instance = null

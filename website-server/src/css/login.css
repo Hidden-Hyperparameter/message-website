@@ -1,0 +1,19 @@
+.LoginPortal .container.card {
+    max-width: 500px;
+    margin-top: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.LoginPortal .container.card .row .col-sm-12 label{
+    margin-right: 20px;
+}
+
+.LoginPortal .container.card .row.buttons {
+    margin-top: 20px;
+}
+
+.LoginPortal .container.card .row.buttons button {
+    width: 50%;
+
+}
