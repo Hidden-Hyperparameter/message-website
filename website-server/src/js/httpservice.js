@@ -100,13 +100,8 @@ class HttpService {
 
     updateUserInfo =  (usr,msg_id) => {
         var promise = new Promise((resolve,reject) => {
-            fetch(this.base_uri + 'UpdateMsg',{
+            fetch(this.base_uri + 'UpdateUserInfo' + '?usr=' + usr + '&msg_id=' + msg_id,{
                 method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({usr:usr,msg_id:msg_id})
             }).then(response => {
                 resolve(response.json());
             }).catch(err => {

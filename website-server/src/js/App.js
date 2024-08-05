@@ -5,7 +5,6 @@ import Msg,{MsgConfig} from './my_msg';
 import MsgPage from './MsgPage';
 import NotificationService,{NotificationEnum} from "./notification";
 import DataService from './dataservice';
-import SmartInputBox from './smart_input';
 import DashBoard from './DashBoard';
 import Editor  from './Editor';
 
@@ -28,22 +27,16 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      at_page: AtPageEnum.MAIN, // DEBUG ONLY
-      // login_portal_props: new LoginPortalProps(),
-      login_portal_props: { // DEBUG ONLY
-        username: "debug",
-        password: "debug",
-        login_ed: true,
-      },
-      promise_status: undefined,
-      page_edit_details : {
-        saved: false,
-        embed_msg: new MsgConfig(),
-      },
-      view_msg_details : {
-        msg: undefined
-      },
-      render_required_params : undefined
+      at_page: AtPageEnum.LOGIN,
+      // at_page: AtPageEnum.MAIN, // DEBUG ONLY
+      login_portal_props: new LoginPortalProps(),
+      // login_portal_props: { // DEBUG ONLY
+      //   username: "debug",
+      //   password: "debug",
+      //   login_ed: true,
+      // },
+      msg_page_msg:undefined,
+      editor_page_msg: new MsgConfig(),
     }
     this.render_methods = {
       [AtPageEnum.LOGIN]: this.render_login,
@@ -70,16 +63,39 @@ class App extends Component {
     ns.addObserver(NotificationEnum.EDIT_MSG, this, this.switchToEdit);
     ns.addObserver(NotificationEnum.VIEW_MSG,this,(msg_dict) => {
       this.setState({
-        view_msg_details: {
-          msg: msg_dict
-        },
-        promise_status:PromiseStatusEnum.NOT_BEGUN,
-        at_page: AtPageEnum.MSG
+        msg_page_msg:msg_dict
       })
+      this.switchPage(AtPageEnum.MSG);
     });
     ns.addObserver(NotificationEnum.BACK_TO_MAIN,this,() => {this.switchPage(AtPageEnum.MAIN);});
     ns.addObserver(NotificationEnum.TO_UNPUBLISHED_PAGE,this,() => {this.switchPage(AtPageEnum.UNPUBISHED_MSG_PAGE);});
+    ns.addObserver(NotificationEnum.SAVE_MSG_TO_DB,this,this.send_msg);
+    ns.addObserver(NotificationEnum.SAVE_REPLY_TO_DB,this,this.send_reply);
+
+    ns.addObserver(NotificationEnum.LOAD_GENERAL,this,this.load)
   }
+
+  load = () => {
+      switch(this.state.at_page){
+        case AtPageEnum.MYSENT:
+          this.render_mysent_fetch();
+          break;
+        case AtPageEnum.MYREPLY:
+          this.render_myreply_fetch();
+          break;
+        case AtPageEnum.UNPUBISHED_MSG_PAGE:
+          this.getMyUnpublicMsg();
+          break;
+        case AtPageEnum.MSG:
+          this.selectMsgToView();
+          break;
+        case AtPageEnum.EDIT:
+          ns.postNotification(NotificationEnum.EDITOR_LOAD_MSG,new MsgConfig());
+          break;
+        default:
+          throw "Shouldn't call this!"
+      }
+    }
 
   componentWillUnmount = () => {
     ns.removeObserver(this, NotificationEnum.NOTIFY_LOGIN);
@@ -87,6 +103,9 @@ class App extends Component {
     ns.removeObserver(this, NotificationEnum.VIEW_MSG);
     ns.removeObserver(this, NotificationEnum.CHANGE_PAGE);
     ns.removeObserver(this, NotificationEnum.TO_UNPUBLISHED_PAGE);
+    ns.removeObserver(this, NotificationEnum.SAVE_MSG_TO_DB);
+    ns.removeObserver(this, NotificationEnum.SAVE_REPLY_TO_DB);
+    ns.removeObserver(this, NotificationEnum.LOAD_GENERAL);
   }
 
 // ############### LOGIN PAGE ################
@@ -100,19 +119,18 @@ class App extends Component {
   }
 
   onNotifyLogin = (data) => {
-    this.state.login_portal_props.login_ed = true;
-    this.state.login_portal_props.username = data.username;
-    this.state.login_portal_props.password = data.password;
-    this.setState({at_page: AtPageEnum.MAIN});
+    this.setState({
+      at_page: AtPageEnum.MAIN,
+      login_portal_props: {
+        login_ed: true,
+        username: data.username,
+        password: data.password
+      }
+    });
   }
 
   switchPage = (page) => {
-    // do some cleanup
-    this.setState({
-      page_edit_details: {
-        saved: false,
-        embed_msg: new MsgConfig(),
-      },promise_status:PromiseStatusEnum.NOT_BEGUN,at_page: page});
+    this.setState({at_page: page});
   }
 
 // ############### MAIN PAGE ################
@@ -136,7 +154,7 @@ class App extends Component {
           </div>
           <div className='row secondrow'>
             <div className='col-sm-12'>
-              <a className="btn btn-primary" onClick={() => {this.switchPage(AtPageEnum.EDIT)}}>Compose or Edit Message</a>
+              <a className="btn btn-primary" onClick={() => {this.state.editor_page_msg = new MsgConfig();this.switchPage(AtPageEnum.EDIT)}}>Compose or Edit Message</a>
             </div>
           </div>
           <div className='row thirdrow d-flex align-items-center'>
@@ -163,7 +181,6 @@ class App extends Component {
   }
 
   render_mysent = () => {
-      this.render_mysent_fetch();
       return <DashBoard header="My Sent Messages" msg_btn_type="View"/>
   }
 
@@ -176,12 +193,10 @@ class App extends Component {
   }
 
   render_myreply =  () => {
-    this.render_myreply_fetch()
     return <DashBoard header="My Replied Messages" msg_btn_type="View"/>
   }
 
 // ############### MSG PAGE ################
-// The message may either be random chosen, or chosen by the user
 
   selectMsgToView =  () => {
     ds.getOneOtherMsg(this.state.login_portal_props.username).then((msg) => {
@@ -195,26 +210,46 @@ class App extends Component {
   }
 
   render_msg_page = () => {
-    this.selectMsgToView();
-    return <MsgPage/>;
+    return <MsgPage msg={this.state.msg_page_msg}/>;
+  }
+
+  send_reply = async (props) => {
+    var rep = props.rep;
+    var msg = props.msg;
+    rep.usr = this.state.login_portal_props.username
+    try{
+        rep._id =  await ds.setMsgToDB(rep);
+        await ds.updateReplyToMsg(msg, rep);
+        await ds.updateUserInfo(this.state.login_portal_props.username, msg._id);
+    }catch(err){console.error(err)}
+    alert('Reply sent. Redirecting to main page...')
+    ns.postNotification(NotificationEnum.BACK_TO_MAIN);
   }
 
 // ############### EDIT PAGE ################
 
   switchToEdit = (data) => {
     this.switchPage(AtPageEnum.EDIT);
-    if(data)
-      this.setState({
-        page_edit_details: {
-          saved: true,
-          embed_msg: data,
-        }
-      });
+    this.setState({editor_page_msg:data});
   }
 
   render_edit = () => {
     // a editer for the user to create a new message
-    return <Editor />
+    return <Editor msg={this.state.editor_page_msg} saved={true}/>
+  }
+
+  send_msg = async (props) => {
+    var msg = props.msg;
+    msg.usr = this.state.login_portal_props.username;
+    console.log('App.js file send message',msg)
+    try{
+      if(!msg._id){
+        msg._id =  await ds.setMsgToDB(msg);
+        ns.postNotification(NotificationEnum.EDITOR_LOAD_MSG,msg);
+      }else{
+        await ds.setMsgToDB(msg);
+      }
+    }catch(err){console.error(err)} 
   }
 
 // ############### MY UNPUBLISHED MSG PAGE ################
@@ -226,7 +261,6 @@ class App extends Component {
   }
 
   render_edit_unpublished = () => {
-    this.getMyUnpublicMsg();
     return <DashBoard msg_btn_type="edit" header="Your Unsent Messages"/>
   }
 
@@ -255,7 +289,7 @@ class App extends Component {
             </div>
             <div className='col-sm-8'>
               <div className='container'>
-                  <h1> Whisper Bottles </h1>
+                  <h1> Message Bottles </h1>
               </div>
             </div>
           </div>

@@ -3,6 +3,7 @@ import Msg from "./my_msg";
 import SmartInputBox from "./smart_input";
 import NotificationService,{NotificationEnum} from "./notification";
 import DataService from "./dataservice";
+import { LOADING_PAGE } from "./common";
 let ns = new NotificationService();
 let ds = new DataService();
 
@@ -10,7 +11,7 @@ class MsgPage extends Component {
     constructor(props){
         super(props);
         this.state = {
-            msg: undefined
+            msg: props.msg
         }
     }
 
@@ -31,7 +32,8 @@ class MsgPage extends Component {
     render = () => {
         var msg = this.state.msg;
         if(!msg) {
-            alert('Error: you shouldn\'t be here without a message to view. This is a technical error, please report it to the admin.');
+            ns.postNotification(NotificationEnum.LOAD_GENERAL);
+            return LOADING_PAGE;
         }
         var out = []
         out.push(
@@ -81,9 +83,8 @@ class MsgPage extends Component {
         ns.postNotification(NotificationEnum.BACK_TO_MAIN)
     }
 
-    onSendReply = async () => {
+    onSendReply = () => {
         var rep = {
-            usr: this.state.login_portal_props.username,
             msg_type: "reply",
             content: document.getElementById('reply-content').value,
             reply_list: [],
@@ -91,13 +92,7 @@ class MsgPage extends Component {
             last_modified: new Date(),
         }
         var msg = this.state.msg;
-        try{
-            rep._id =  await ds.setMsgToDB(rep);
-            await ds.updateReplyToMsg(msg, rep);
-            await ds.updateUserInfo(this.state.login_portal_props.username, msg._id);
-        }catch(err){console.error(err)}
-        alert('Reply sent. Redirecting to main page...')
-        this.postNotification(NotificationEnum.BACK_TO_MAIN);
+        ns.postNotification(NotificationEnum.SAVE_REPLY_TO_DB, {msg: msg, rep: rep});
     }
 
 }

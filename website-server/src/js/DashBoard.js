@@ -23,21 +23,24 @@ class DashBoard extends Component {
     }
 
     onDashBoardLoaded = (props) => {
+        console.log('loaded:',props)
         this.setState(props)
     }
 
     render = () => {
         var my_msges = this.state.messages;
         if(!my_msges){
+            ns.postNotification(NotificationEnum.LOAD_GENERAL,null)
             return LOADING_PAGE
         }
         var out = []
         for(var i = 0; i < my_msges.length; i++){
-        out.push(
-            <li>
-                <Msg embed_msg={my_msges[i]} havebtn={true} key={my_msges[i]._id} buttonType={this.state.msg_btn_type}></Msg>
-            </li>
-        )
+            console.log('item',i,'key is',my_msges[i]._id)
+            out.push(
+                <li>
+                    <Msg embed_msg={my_msges[i]} havebtn={true} key={my_msges[i]._id} buttonType={this.state.msg_btn_type}></Msg>
+                </li>
+            )
         }
         return (
         <div className="container-fluid App-main">

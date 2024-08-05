@@ -1,8 +1,9 @@
 import React,{Component} from "react";
-import Msg from "./my_msg";
+import Msg, {MsgConfig} from "./my_msg";
 import SmartInputBox from "./smart_input";
 import DataService from "./dataservice";
 import NotificationService,{NotificationEnum} from "./notification";
+import { LOADING_PAGE } from "./common";
 
 let ds = new DataService();
 let ns = new NotificationService();
@@ -10,15 +11,35 @@ let ns = new NotificationService();
 class Editor extends Component{
     constructor(props){
         super(props)
+        this.state = {
+          embed_msg: props.msg,
+          saved: props.saved
+        }
 
         this.setDetailsAndSend = this.setDetailsAndSend.bind(this);
         this.onClickPublish = this.onClickPublish.bind(this);
         this.onClickSave = this.onClickSave.bind(this);
         this.onClickDiscard = this.onClickDiscard.bind(this);
         this.onClickDelete = this.onClickDelete.bind(this);
+
+    }
+
+    componentDidMount = () => {
+        ns.addObserver(NotificationEnum.EDITOR_LOAD_MSG, this, (data) => this.setState({
+            embed_msg: data,
+            saved: true
+          }));
+    }
+
+    componentWillUnmount = () => {
+        ns.removeObserver(this, NotificationEnum.EDITOR_LOAD_MSG);
     }
 
     render = () => {
+        if(!this.state.embed_msg){
+          ns.postNotification(NotificationEnum.LOAD_GENERAL);
+          return LOADING_PAGE;
+        }
         return (
             <div className="container-fluid App-main">
                 <h1> Compose Message </h1>
@@ -28,7 +49,7 @@ class Editor extends Component{
                     <label>Content:</label>
                   </div>
                   <div className='col-sm-4'>
-                    <SmartInputBox  type="text" id="content" name="content" value={this.state.page_edit_details.embed_msg.content}/>
+                    <SmartInputBox  type="text" id="content" name="content" value={this.state.embed_msg.content}/>
                   </div>
                 </div>
                 <div className='row'>
@@ -50,19 +71,22 @@ class Editor extends Component{
     }
 
     setDetailsAndSend = async (sent) => {
-        this.state.page_edit_details.embed_msg.content = document.getElementById('content').value;
-        this.state.page_edit_details.embed_msg.usr = this.state.login_portal_props.username;
-        this.state.page_edit_details.embed_msg.last_modified = new Date();
-        this.state.page_edit_details.embed_msg.msg_type = "sender";
-        this.state.page_edit_details.embed_msg.sent = sent;
-        try{
-        if(!this.state.page_edit_details.saved){
-          this.state.page_edit_details.embed_msg._id =  await ds.setMsgToDB(this.state.page_edit_details.embed_msg);
-          this.state.page_edit_details.saved = true;
-        }else{
-           await ds.setMsgToDB(this.state.page_edit_details.embed_msg);
+        var result = {
+          last_modified: new Date(),
+          msg_type: "sender",
+          sent: sent,
+          content: document.getElementById('content').value,
+          reply_list: []
         }
-        }catch(err){console.error(err)} 
+        if(this.state.embed_msg._id) result._id = this.state.embed_msg._id;
+        ns.postNotification(NotificationEnum.SAVE_MSG_TO_DB, {
+          saved: this.state.saved,
+          msg: result
+        });
+        this.setState({
+          embed_msg: result,
+          saved: true
+        })
       }
     
       onClickPublish = () => {
@@ -73,7 +97,7 @@ class Editor extends Component{
     
       onClickSave = () => {
         this.setDetailsAndSend(false)
-        alert('saved')
+        alert('Your message is saved (but not published).')
       }
     
       onClickDiscard = () => {
@@ -81,13 +105,13 @@ class Editor extends Component{
       }
 
       onClickDelete =  async () => {
-        if(this.state.page_edit_details.saved){
+        if(this.state.saved){
           try{
-           await ds.deleteMsgFromDB(this.state.page_edit_details.embed_msg._id);
+           await ds.deleteMsgFromDB(this.state.embed_msg._id);
           }catch(err){console.error(err)}
         }
         alert('Successfully deleted')
-        ns.postNotification(NotificationEnum.BACK_TO_MAIN);
+        ns.postNotification(NotificationEnum.TO_UNPUBLISHED_PAGE);
       }
 }
 

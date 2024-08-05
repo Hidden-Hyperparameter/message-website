@@ -101,12 +101,13 @@ class DataService { // singleton
             }
             return some._id
         }
+        console.log('In function setMsgtoDB',msg._id);
         try{
             var l = await http.getById(msg._id)
         }catch(err){
             console.error(err)
         }
-        if(l.length){
+        if(l._id){
             if(l.last_modified >= msg.last_modified){
                 alert('Your message is out of date. Someone has modified on' + l.last_modified  +' . This is a technical error, please report it to the admin.')
             }else {

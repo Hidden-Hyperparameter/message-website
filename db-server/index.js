@@ -95,7 +95,9 @@ app.get('/getMyPublicMessages', async function(req, res) {
 app.get('/getById', async function(req, res) {
     try{
         const id = req.query.id
-        var data = await MessageSchema.findOne({_id: id}).populate('reply_list');
+        // console.log('id',id);
+        var data = await MessageSchema.findById(id).populate('reply_list');
+        // console.log('Get',data)
         res.send(data)
     }catch (err) {
         res.status(400).send({error: 'Unable to getById ' + err})
@@ -106,7 +108,8 @@ app.get('/getUserInfo', async function(req, res) {
     try{
         const usr = req.query.usr
         var data = await UserSchema.findOne({usr: usr});
-        // console.log(data)
+        console.log('getUserInfo, input',usr)
+        console.log('getUserInfo, result',data)
         if(!data){data = []}
         res.send(data)
     }catch (err) {
@@ -117,7 +120,9 @@ app.get('/getUserInfo', async function(req, res) {
 app.post('/getByIds', async function(req, res) {
     try{
         var ids = req.body.ids
+        console.log('getByIds, input ids:',ids)
         var data = await MessageSchema.find({_id: {$in: ids}}).populate('reply_list');
+        console.log('getByIds',data)
         res.send(data)
     }catch (err) {
         res.status(400).send({error: 'Unable to getById ' + err})
@@ -166,9 +171,11 @@ app.post('/addNewUser', async function(req, res) {
 
 app.put('/updateUserInfo', async function(req, res) {
     try{
-        const usr = req.params.usr
-        const msg_id = req.params.msg_id
+        const usr = req.query.usr
+        const msg_id = req.query.msg_id
+        console.log('input param',usr,msg_id)
         var data = await UserSchema.updateOne({usr: usr}, {$addToSet: {replied_questions: msg_id}});
+        console.log('result',data)
         res.send(data)
     }catch (err) {
         res.status(400).send({error: 'Unable to updateUserInfo: ' + err})

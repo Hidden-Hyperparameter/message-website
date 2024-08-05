@@ -6,6 +6,10 @@ class NotificationEnum {
     static TO_UNPUBLISHED_PAGE = "TO_UNPUBLISHED_PAGE";
     static DASHBOARD_LOADED = "DASHBOARD_LOADED";
     static MSG_PAGE_LOADED = "MSG_PAGE_LOADED";
+    static EDITOR_LOAD_MSG = "EDITOR_IS_SAVED";
+    static SAVE_MSG_TO_DB = "SAVE_MSG_TO_DB";
+    static SAVE_REPLY_TO_DB = "SAVE_REPLY_TO_DB";
+    static LOAD_GENERAL = "LOAD_GENERAL";
 }
 
 let instance = null
