@@ -30,14 +30,14 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      // at_page: AtPageEnum.LOGIN,
-      at_page: AtPageEnum.MAIN, // DEBUG ONLY
-      // login_portal_props: new LoginPortalProps(),
-      login_portal_props: { // DEBUG ONLY
-        username: "debug",
-        password: "debug",
-        login_ed: true,
-      },
+      at_page: AtPageEnum.LOGIN,
+      // at_page: AtPageEnum.MAIN, // DEBUG ONLY
+      login_portal_props: new LoginPortalProps(),
+      // login_portal_props: { // DEBUG ONLY
+      //   username: "debug",
+      //   password: "debug",
+      //   login_ed: true,
+      // },
       msg_page_msg:undefined,
       editor_page_msg: new MsgConfig(),
     }

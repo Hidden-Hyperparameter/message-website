@@ -1,6 +1,16 @@
 # Message Bottles
 
-## TODO List
+## Deployment
+
+```sh
+cd docker
+make pull
+make run
+```
+
+## Development
+
+Our TODO List:
 
 - [X] Fix "Get New Message" part, shouldn't display the message you sent
 - [X] After send a message, switch to the page that displays the message you sent
