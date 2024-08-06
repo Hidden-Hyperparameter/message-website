@@ -1,13 +1,8 @@
-const { MONGO_DB_PASSWORD,MONGO_DB_USER,MY_ADDR } = require('./env');
+const { URI,MY_ADDR } = require('./env');
 
 // connect to the database
-const databaseUrl = MONGO_DB_USER;
-const apiKey = MONGO_DB_PASSWORD;
-if(!databaseUrl || !apiKey){
-    throw new Error('Cannot find dotenv file!')
-}
 var mongoose = require('mongoose')
-const uri = 'mongodb+srv://' + databaseUrl  +':'+ apiKey +'@cluster0.4z3rfsn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const uri = URI;
 console.log('CONNECTING TO DATABASE')
 var db = mongoose.connect(uri)
 if(!db){

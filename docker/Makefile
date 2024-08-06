@@ -26,9 +26,19 @@ pull:
 	sudo docker tag hiddenhyperparameter/message-website-db:$$version db:latest && \
 	sudo docker tag hiddenhyperparameter/message-website-webserver:$$version web:latest
 
+# These four commands can be separately copied to the server
+version:
+	@echo "0.0.1" > VERSION
+
+run_db:
+	sudo docker run -p 3001:3001 --name db db:$(shell cat VERSION) > db.log 2>&1 & tail -f db.log
+
+run_web:
+	sudo docker run -p 3000:3000 --name web web:$(shell cat VERSION) > web.log 2>&1 & tail -f web.log
+
 run:
-	sudo docker run -d -p 3001:3001 --name db db:latest
-	sudo docker run -d -p 3000:3000 --name web web:latest
+	sudo docker run -p 3001:3001 --name db db:$(shell cat VERSION) -d
+	sudo docker run -p 3000:3000 --name web web:$(shell cat VERSION) -d
 
 stop:
 	sudo docker stop db
