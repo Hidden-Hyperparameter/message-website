@@ -1,5 +1,5 @@
 import React,{Component} from "react";
-import Msg from "./my_msg";
+import Msg, { MsgConfig } from "./my_msg";
 import NotificationService,{NotificationEnum} from "./notification";
 import { LOADING_PAGE } from "./common";
 
@@ -41,7 +41,7 @@ class DashBoard extends Component {
         for(var i = 0; i < my_msges.length; i++){
             console.log('item',i,'key is',my_msges[i]._id)
             out.push(
-                <li>
+                <li key={my_msges[i]._id}>
                     <Msg embed_msg={my_msges[i]} havebtn={true} key={my_msges[i]._id} buttonType={this.state.msg_btn_type}></Msg>
                 </li>
             )
@@ -49,7 +49,7 @@ class DashBoard extends Component {
         return (
         <div className="container-fluid App-main">
             <h1> {this.state.header} </h1>
-            <a className="btn btn-primary" onClick={() => ns.postNotification(NotificationEnum.EDIT_MSG,null)}>Compose a New Message</a>
+            <a className="btn btn-primary" onClick={() => ns.postNotification(NotificationEnum.EDIT_MSG,new MsgConfig())}>Compose a New Message</a>
             <ul>
                 {out}
             </ul>

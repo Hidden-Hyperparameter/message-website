@@ -21,6 +21,9 @@ class LoginPortal extends Component {
         for(var key in props){
             this.state[key] = props[key];
         }
+        //bind
+        this.login = this.login.bind(this);
+        this.signUp = this.signUp.bind(this);
     }
     
     render = () => {

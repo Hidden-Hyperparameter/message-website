@@ -7,7 +7,9 @@
 - [] Display response number in each message
 - [] Add "how to use the website" in the documentation page
 - [] Modify CSS to make the website more beautiful
-- [] Clear debug messages in the console and from database
+- [X] Clear debug messages in the console and from database
+- [] Deploy using docker.
+- [] When there are no messages, display a page to tell that this is empty (not website error)
 
 ## What's this website for?
 

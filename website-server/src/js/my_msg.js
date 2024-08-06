@@ -55,7 +55,8 @@ class Msg extends Component {
         }
 
         // bind
-        this.render = this.render.bind(this);
+        this.anounceEdit = this.anounceEdit.bind(this)
+        this.anounceView = this.anounceView.bind(this)
     }
 
     static DateToString = (date) => {

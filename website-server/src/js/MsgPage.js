@@ -14,6 +14,11 @@ class MsgPage extends Component {
         this.state = {
             msg: props.msg
         }
+
+        // bind
+        this.onSendReply = this.onSendReply.bind(this);
+        this.onLeaveReplyCenter = this.onLeaveReplyCenter.bind
+
     }
 
     componentDidMount = () => {
@@ -25,6 +30,7 @@ class MsgPage extends Component {
     }
 
     onMsgPageLoaded = (data) => {
+        console.log('on reciving:',data)
         this.setState({
             msg:data
         })
@@ -47,7 +53,7 @@ class MsgPage extends Component {
         <ul>
             {msg.reply_list.map((rep) => {
             return (
-                <li>
+                <li key={rep._id}>
                 <Msg embed_msg={rep} key={rep._id} noreply={true}></Msg>
                 </li>
             )

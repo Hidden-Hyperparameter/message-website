@@ -111,6 +111,19 @@ class HttpService {
         return promise;
     }
 
+    addReplyToMsg = (msg_id,reply_id) => {
+        var promise = new Promise((resolve,reject) => {
+            fetch(this.base_uri + 'AddReplyToMsg' + '?msg_id=' + msg_id + '&reply_id=' + reply_id,{
+                method: 'PUT',
+            }).then(response => {
+                resolve(response.json());
+            }).catch(err => {
+                reject(err);
+            })
+        })
+        return promise;
+    }
+    
     deleteMsg =  (id) => {
         var promise = new Promise((resolve,reject) => {
             fetch(this.base_uri + 'deleteMsg' + '?id=' + id,{

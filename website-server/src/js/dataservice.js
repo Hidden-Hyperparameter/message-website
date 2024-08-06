@@ -14,14 +14,14 @@ class DataService { // singleton
     }
 
     getOtherMessageFromDB = async (usr) => {
-        // not really implemented
-        // console.log('Call getQuestionFromDB')
         try{
             var fetched_msg = await http.getOthersMessages(usr)
-            var replied_msg_lst = await http.getUserInfo(usr).replied_questions
+            var replied_msg_lst = (await http.getUserInfo(usr)).replied_questions
+            if(!replied_msg_lst) throw '????'
         }catch(err){
             console.error(err)
         }
+        replied_msg_lst = replied_msg_lst.map((msg) => msg._id) // get the id of the replied messages
         fetched_msg = fetched_msg.filter(
             (msg) => {
                 return !replied_msg_lst.includes(msg._id)
@@ -34,19 +34,11 @@ class DataService { // singleton
                 return b.reply_list.length > a.reply_list.length ? 1 : -1;
             }
         })
-        // console.log(x)
         return x
     }
 
     getOneOtherMsg = async (usr) => {
-        var viewed_msg = (await http.getUserInfo(usr)).replied_questions
-        // console.log('viewed_msg',viewed_msg)
-        var fetched_msg = await http.getOthersMessages(usr)
-        fetched_msg = fetched_msg.filter(
-            (msg) => {
-                return !viewed_msg.includes(msg._id)
-            }
-        )
+        var fetched_msg = await this.getOtherMessageFromDB(usr)
         if(fetched_msg.length){
             var rnd_idx = Math.floor(Math.random() * fetched_msg.length)
             return fetched_msg[rnd_idx]
@@ -61,7 +53,6 @@ class DataService { // singleton
                 (a, b) => { 
                     return a.last_modified > b.last_modified ? -1 : 1;
             });
-            // console.log('getMyUnpublicDataFromDB returning',data)
             return data
         } catch(err){
             console.error(err)
@@ -79,7 +70,7 @@ class DataService { // singleton
 
     getMyRepliesFromDB = async (usr) => {
         try{
-            var fetched_msg = await http.getByIds( (await http.getUserInfo(usr)).replied_questions)
+            var fetched_msg = (await http.getUserInfo(usr)).replied_questions
         }catch(err){
             console.error(err)
         }
@@ -90,12 +81,9 @@ class DataService { // singleton
     }
 
     setMsgToDB = async (msg) => {
-        // console.log('msg',msg)
         if(!msg._id){ // a new message without ID, DB will give it an id
             try{
-                // console.log('in')
                 var some = await http.addNewMsg(msg)
-                // console.log('out')
             }catch(err){
                 console.error(err)
             }
@@ -132,15 +120,10 @@ class DataService { // singleton
     }
 
     updateReplyToMsg = async (msg,reply) => {
-        if(!msg.reply_list){
-            msg.reply_list = []
-        }
-        msg.reply_list.push(reply)
+        if(!msg._id || !reply._id) throw 'You need to assign ID first.'
         try{
-            http.UpdateMsg(msg)
-        }catch(err){
-            // console.log(err)
-        }
+            await http.addReplyToMsg(msg._id,reply._id)
+        }catch(err) { console.error(err) }
     }
 
     updateUserInfo = async (usr,msg_id) => {

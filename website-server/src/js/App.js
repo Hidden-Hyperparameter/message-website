@@ -51,23 +51,26 @@ class App extends Component {
     for(var key in this.render_methods){
       this.render_methods[key] = this.render_methods[key].bind(this);
     }
-    this.render = this.render.bind(this);
-    this.onNotifyLogin = this.onNotifyLogin.bind(this);
     this.switchPage = this.switchPage.bind(this);
+    this.send_msg = this.send_msg.bind(this);
+    this.send_reply = this.send_reply.bind(this);
     this.switchToEdit = this.switchToEdit.bind(this);
+    this.load = this.load.bind(this);
     this.getMyUnpublicMsg = this.getMyUnpublicMsg.bind(this);
+    this.selectMsgToView = this.selectMsgToView.bind(this);
+    this.onNotifyLogin = this.onNotifyLogin.bind(this);    
   }
 
   componentDidMount = () => {
     ns.addObserver(NotificationEnum.NOTIFY_LOGIN, this, this.onNotifyLogin);
     ns.addObserver(NotificationEnum.EDIT_MSG, this, this.switchToEdit);
     ns.addObserver(NotificationEnum.VIEW_MSG,this,(msg_dict) => {
-      this.setState({
-        msg_page_msg:msg_dict
-      })
       this.switchPage(AtPageEnum.MSG);
+      this.setState({msg_page_msg:msg_dict});
+      console.log('view message msg_dict',msg_dict)
+      // ns.postNotification(NotificationEnum.MSG_PAGE_LOADED,msg_dict);
     });
-    ns.addObserver(NotificationEnum.BACK_TO_MAIN,this,() => {this.switchPage(AtPageEnum.MAIN);});
+    ns.addObserver(NotificationEnum.BACK_TO_MAIN,this,this.goHome);
     ns.addObserver(NotificationEnum.TO_UNPUBLISHED_PAGE,this,() => {this.switchPage(AtPageEnum.UNPUBISHED_MSG_PAGE);});
     ns.addObserver(NotificationEnum.SAVE_MSG_TO_DB,this,this.send_msg);
     ns.addObserver(NotificationEnum.SAVE_REPLY_TO_DB,this,this.send_reply);
@@ -90,7 +93,7 @@ class App extends Component {
           this.selectMsgToView();
           break;
         case AtPageEnum.EDIT:
-          ns.postNotification(NotificationEnum.EDITOR_LOAD_MSG,new MsgConfig());
+          ns.postNotification(NotificationEnum.EDITOR_LOAD_MSG,{msg: new MsgConfig(), saved: false});
           break;
         default:
           throw "Shouldn't call this!"
@@ -108,6 +111,16 @@ class App extends Component {
     ns.removeObserver(this, NotificationEnum.LOAD_GENERAL);
   }
 
+  switchPage = (page) => {
+    this.setState({at_page: page});
+  }
+
+  goHome = () => {
+    this.switchPage(AtPageEnum.MAIN);
+    // clean cache
+    this.setState({msg_page_msg:undefined,editor_page_msg:new MsgConfig()});
+  }
+
 // ############### LOGIN PAGE ################
 
   render_login = () => {
@@ -123,10 +136,6 @@ class App extends Component {
         password: data.password
       }
     });
-  }
-
-  switchPage = (page) => {
-    this.setState({at_page: page});
   }
 
 // ############### MAIN PAGE ################
@@ -154,7 +163,7 @@ class App extends Component {
     ans.push(
       <div className='row secondrow'>
         <div className='col-sm-12'>
-          <a className="btn btn-primary" onClick={() => {this.state.editor_page_msg = new MsgConfig();this.switchPage(AtPageEnum.EDIT)}}>Compose or Edit Message</a>
+          <a className="btn btn-primary" onClick={() => {this.switchToEdit(new MsgConfig())}}>Compose or Edit Message</a>
         </div>
       </div>
     ) // edit message button
@@ -179,7 +188,7 @@ class App extends Component {
   render_mysent_fetch =  () => {
     ds.getMyPublicDataFromDB(this.state.login_portal_props.username).then(((my_msges) => {
       ns.postNotification(NotificationEnum.DASHBOARD_LOADED,{messages: my_msges});
-    }),(err) => {alert('Sorry, our database server encounters some errors:' + err + '. Please report it to admin.'); this.setState({at_page:AtPageEnum.MAIN})})  
+    }),(err) => {alert('Sorry, our database server encounters some errors:' + err + '. Please report it to admin.'); this.goHome()})  
   }
 
   render_mysent = () => {
@@ -191,7 +200,7 @@ class App extends Component {
   render_myreply_fetch = () => {
     ds.getMyRepliesFromDB(this.state.login_portal_props.username).then((my_msges) => {
       ns.postNotification(NotificationEnum.DASHBOARD_LOADED,{messages: my_msges});
-    }).catch((err) => {alert('Sorry, our database server encounters some errors:' + err + '. Please report it to admin.'); this.setState({at_page:AtPageEnum.MAIN})})
+    }).catch((err) => {alert('Sorry, our database server encounters some errors:' + err + '. Please report it to admin.'); this.goHome()})
   }
 
   render_myreply =  () => {
@@ -204,11 +213,11 @@ class App extends Component {
     ds.getOneOtherMsg(this.state.login_portal_props.username).then((msg) => {
       if(!msg){
         alert('There is no new message for you to view now. Redirecting to main page...');
-        this.switchPage(AtPageEnum.MAIN);
+        this.goHome();
         return;
       }
       ns.postNotification(NotificationEnum.MSG_PAGE_LOADED,msg);
-    }).catch((err) => {alert('Sorry, our database server encounters some errors:' + err + '. Please report it to admin.'); this.setState({at_page:AtPageEnum.MAIN})})
+    }).catch((err) => {alert('Sorry, our database server encounters some errors:' + err + '. Please report it to admin.'); this.goHome()})
   }
 
   render_msg_page = () => {
@@ -225,7 +234,7 @@ class App extends Component {
         await ds.updateUserInfo(this.state.login_portal_props.username, msg._id);
     }catch(err){console.error(err)}
     alert('Reply sent. Redirecting to main page...')
-    ns.postNotification(NotificationEnum.BACK_TO_MAIN);
+    this.goHome();
   }
 
 // ############### EDIT PAGE ################
@@ -237,6 +246,7 @@ class App extends Component {
 
   render_edit = () => {
     // a editer for the user to create a new message
+    console.log('editor_page_msg',this.state.editor_page_msg)
     return <Editor msg={this.state.editor_page_msg} saved={true}/>
   }
 
@@ -247,7 +257,7 @@ class App extends Component {
     try{
       if(!msg._id){
         msg._id =  await ds.setMsgToDB(msg);
-        ns.postNotification(NotificationEnum.EDITOR_LOAD_MSG,msg);
+        ns.postNotification(NotificationEnum.EDITOR_LOAD_MSG,{msg:msg,saved:true});
       }else{
         await ds.setMsgToDB(msg);
       }
@@ -259,7 +269,7 @@ class App extends Component {
   getMyUnpublicMsg =  () => {
     ds.getMyUnpublicDataFromDB(this.state.login_portal_props.username).then((msges) => {
       ns.postNotification(NotificationEnum.DASHBOARD_LOADED,{messages: msges});
-    }).catch((err) => {alert('Sorry, our database server encounters some errors:' + err + '. Please report it to admin.'); this.setState({at_page:AtPageEnum.MAIN})})
+    }).catch((err) => {alert('Sorry, our database server encounters some errors:' + err + '. Please report it to admin.'); this.goHome()})
   }
 
   render_edit_unpublished = () => {
@@ -294,7 +304,7 @@ class App extends Component {
             </div>
           </div>
           <div className='container'>
-            <a className="btn btn-primary" onClick={() => this.switchPage(AtPageEnum.MAIN)}>Go Home</a>
+            <a className="btn btn-primary" onClick={() => this.goHome()}>Go Home</a>
           </div>
         </header>
         <div className="container-fluid App-main">

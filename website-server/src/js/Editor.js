@@ -16,7 +16,7 @@ class Editor extends Component{
           embed_msg: props.msg,
           saved: props.saved
         }
-
+        //bind
         this.setDetailsAndSend = this.setDetailsAndSend.bind(this);
         this.onClickPublish = this.onClickPublish.bind(this);
         this.onClickSave = this.onClickSave.bind(this);
@@ -26,10 +26,11 @@ class Editor extends Component{
     }
 
     componentDidMount = () => {
-        ns.addObserver(NotificationEnum.EDITOR_LOAD_MSG, this, (data) => this.setState({
-            embed_msg: data,
-            saved: true
-          }));
+        ns.addObserver(NotificationEnum.EDITOR_LOAD_MSG, this, (data) => {  console.log('NOTIFICATION RECIEVED FOR EDITOR')
+          this.setState({
+            embed_msg: data.msg,
+            saved: data.saved
+          })});
     }
 
     componentWillUnmount = () => {
@@ -37,10 +38,10 @@ class Editor extends Component{
     }
 
     render = () => {
-        if(!this.state.embed_msg){
-          ns.postNotification(NotificationEnum.LOAD_GENERAL);
-          return LOADING_PAGE;
-        }
+        // if(!this.state.embed_msg){
+        //   ns.postNotification(NotificationEnum.LOAD_GENERAL);
+        //   return LOADING_PAGE;
+        // }
         return (
             <div className="container-fluid App-main">
                 <h1> Compose Message </h1>
@@ -88,6 +89,7 @@ class Editor extends Component{
           embed_msg: result,
           saved: true
         })
+        console.log('The new embed message is', result)
       }
     
       onClickPublish = () => {
