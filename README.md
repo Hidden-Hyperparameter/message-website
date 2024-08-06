@@ -18,7 +18,7 @@ Our TODO List:
 - [] Add "how to use the website" in the documentation page
 - [X] Modify CSS to make the website more beautiful
 - [X] Clear debug messages in the console and from database
-- [] Deploy using docker.
+- [X] Deploy using docker.
 - [X] When there are no messages, display a page to tell that this is empty (not website error)
 - [X] Support CSS for mobile devices
 
