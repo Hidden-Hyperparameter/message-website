@@ -24,6 +24,10 @@ Our TODO List:
 
 ## Deployment
 
+You have two options to deploy the website. No matter which case, you **always** have to **Add your server IP to your MongoDB project whitelist**: Please follow the instructions [here](https://www.mongodb.com/docs/atlas/cli/current/command/atlas-accessLists-create/).
+
+### Build from source
+
 1. Set up two `env.js` files:
 
 - first at `website-server/src/js/env.js`:
@@ -43,9 +47,33 @@ Our TODO List:
 
     you can find your connection string at [MongoDB Atlas](https://www.mongodb.com/docs/manual/reference/connection-string/#find-your-connection-string)
 
-2. Then add the server IP to the white-list of the MongoDB. Please follow the instructions [here](https://www.mongodb.com/docs/atlas/cli/current/command/atlas-accessLists-create/).
+2. Run
 
-3. Finally, run the following commands:
+```sh
+npm install
+```
+
+at both `website-server` and `db-server` directories. Notice that I use node `v22.5.1`.
+
+3. First run
+
+```sh
+node index.js
+```
+
+at `db-server` directory, then run
+
+```sh
+npm start
+```
+
+at `website-server` directory. The latter will open a server at `http://YOUR_IP:3000`.
+
+### Using My Docker Images
+
+(I noticed that this is not really a "method", since your server is likely not in **my** MongoDB whitelist. But I will keep this section here for reference.)
+
+You can just run the following commands, which pull from my dockerhub:
 
 ```sh
 export version=YOUR_WANTED_VERSION
@@ -66,5 +94,3 @@ sudo docker run -p 3001:3001 --name db db:$version > db.log 2>&1 & tail -f db.lo
 ```sh
 sudo docker run -p 3000:3000 --name web web:$version > web.log 2>&1 & tail -f web.log
 ```
-
-Notice that the first time you run on a new server, it is likely to fail since the MongoDB requires the IP in white-list. Please follow the instructions [here](https://www.mongodb.com/docs/atlas/cli/current/command/atlas-accessLists-create/) to add the IP of your server to the white-list.
