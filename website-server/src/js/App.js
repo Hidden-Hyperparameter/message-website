@@ -1,14 +1,15 @@
 import '../css/App.css';
 import React, {Component} from 'react';
-import LoginPortal,{LoginPortalProps} from './login';
-import Msg,{MsgConfig} from './my_msg';
+import LoginPortal,{LoginPortalProps} from './Login';
+import Msg,{MsgConfig} from './Msg';
 import MsgPage from './MsgPage';
-import NotificationService,{NotificationEnum} from "./notification";
-import DataService from './dataservice';
+import NotificationService,{NotificationEnum} from "./Notification";
+import DataService from './DataService';
 import DashBoard from './DashBoard';
 import Editor  from './Editor';
+import SHORT_INTRO, {DOCS,FAQ} from './Docs';
 
-import { LOADING_PAGE,PromiseStatusEnum } from './common';
+import { LOADING_PAGE,PromiseStatusEnum } from './Common';
 
 var ds = new DataService();
 var ns = new NotificationService();
@@ -21,20 +22,22 @@ class AtPageEnum {
   static MYREPLY = "myreply";
   static MSG = "msg";
   static UNPUBISHED_MSG_PAGE = "unpublished_msg_page";
+  static DOCS = "docs";
+  static FAQ = "faq";
 }
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      at_page: AtPageEnum.LOGIN,
-      // at_page: AtPageEnum.MAIN, // DEBUG ONLY
-      login_portal_props: new LoginPortalProps(),
-      // login_portal_props: { // DEBUG ONLY
-      //   username: "debug",
-      //   password: "debug",
-      //   login_ed: true,
-      // },
+      // at_page: AtPageEnum.LOGIN,
+      at_page: AtPageEnum.MAIN, // DEBUG ONLY
+      // login_portal_props: new LoginPortalProps(),
+      login_portal_props: { // DEBUG ONLY
+        username: "debug",
+        password: "debug",
+        login_ed: true,
+      },
       msg_page_msg:undefined,
       editor_page_msg: new MsgConfig(),
     }
@@ -45,7 +48,9 @@ class App extends Component {
       [AtPageEnum.UNPUBISHED_MSG_PAGE]: this.render_edit_unpublished,
       [AtPageEnum.MSG]: this.render_msg_page,
       [AtPageEnum.MYSENT]: this.render_mysent,
-      [AtPageEnum.MYREPLY]: this.render_myreply
+      [AtPageEnum.MYREPLY]: this.render_myreply,
+      [AtPageEnum.DOCS]: () => {return DOCS},
+      [AtPageEnum.FAQ]: () => {return FAQ}
     }
     //bind
     for(var key in this.render_methods){
@@ -67,8 +72,7 @@ class App extends Component {
     ns.addObserver(NotificationEnum.VIEW_MSG,this,(msg_dict) => {
       this.switchPage(AtPageEnum.MSG);
       this.setState({msg_page_msg:msg_dict});
-      console.log('view message msg_dict',msg_dict)
-      // ns.postNotification(NotificationEnum.MSG_PAGE_LOADED,msg_dict);
+      // console.log('view message msg_dict',msg_dict)
     });
     ns.addObserver(NotificationEnum.BACK_TO_MAIN,this,this.goHome);
     ns.addObserver(NotificationEnum.TO_UNPUBLISHED_PAGE,this,() => {this.switchPage(AtPageEnum.UNPUBISHED_MSG_PAGE);});
@@ -142,43 +146,33 @@ class App extends Component {
 
   render_main = () => {
     if(!this.state.login_portal_props.login_ed){
-      alert('Please login first');
       this.switchPage(AtPageEnum.LOGIN);
       return;
     }
     var ans = []
     ans.push (
-      <h1> Welcome, <special>{this.state.login_portal_props.username}</special> </h1>
+      <h1 className='welcome-msg'> Welcome, <special>{this.state.login_portal_props.username}</special> !</h1>
     ) // title
     ans.push(
-      <div className='row firstrow'>
-        <div className='col-sm-6'>
-          <a className="btn btn-primary" onClick={() => {this.switchPage(AtPageEnum.MYSENT)}}> My Sent Messages </a>
+      <div className='container row'>
+        <div className='col-sm-4'> {/* Left side bar, three buttons*/}
+          <div className='container main-page-btns'>
+            <a className="btn btn-primary" onClick={() => {this.switchPage(AtPageEnum.MYSENT)}}> My Sent Messages </a>
+            <a className="btn btn-primary" onClick={() => {this.switchPage(AtPageEnum.MYREPLY)}}> Replied Messeges </a>
+            <a className="btn btn-primary" onClick={() => {this.switchToEdit(new MsgConfig())}}>Compose or Edit Message</a>
+          </div>
         </div>
-        <div className='col-sm-6'>
-          <a className="btn btn-primary" onClick={() => {this.switchPage(AtPageEnum.MYREPLY)}}> Replied Messeges </a>
-        </div>
-      </div>
-    ) // first buttons
-    ans.push(
-      <div className='row secondrow'>
-        <div className='col-sm-12'>
-          <a className="btn btn-primary" onClick={() => {this.switchToEdit(new MsgConfig())}}>Compose or Edit Message</a>
-        </div>
-      </div>
-    ) // edit message button
-    ans.push(
-      <div className='row thirdrow d-flex align-items-center'>
         <div className='col-sm-8'>
-          <div className='container'>
+          <div className='container bottle'>
             <a className='btn btn-primary' onClick={() => {this.switchPage(AtPageEnum.MSG)}}>
               <img src="./main-page.png" alt="bottle"/>
-            </a><br/>
-            <label> Click To Get New Messages </label>
+              <label> Click To Get New Messages </label>
+            </a>
           </div>
         </div>
       </div>
-    ) // New Message Logo.
+      
+    )
     return ans
   }
 
@@ -192,7 +186,7 @@ class App extends Component {
   }
 
   render_mysent = () => {
-      return <DashBoard header="My Sent Messages" msg_btn_type="View"/>
+      return <DashBoard header="My Sent Messages" msg_btn_type="View" show_reply_num={true}/>
   }
 
 // ############### MY REPLY PAGE ################
@@ -204,7 +198,7 @@ class App extends Component {
   }
 
   render_myreply =  () => {
-    return <DashBoard header="My Replied Messages" msg_btn_type="View"/>
+    return <DashBoard header="My Replied Messages" msg_btn_type="View" show_reply_num={true}/>
   }
 
 // ############### MSG PAGE ################
@@ -233,8 +227,10 @@ class App extends Component {
         await ds.updateReplyToMsg(msg, rep);
         await ds.updateUserInfo(this.state.login_portal_props.username, msg._id);
     }catch(err){console.error(err)}
-    alert('Reply sent. Redirecting to main page...')
-    this.goHome();
+    alert('Reply sent. Redirecting to your message page...')
+    // Update the message
+    msg.reply_list.push(rep);
+    ns.postNotification(NotificationEnum.VIEW_MSG,msg);
   }
 
 // ############### EDIT PAGE ################
@@ -246,14 +242,12 @@ class App extends Component {
 
   render_edit = () => {
     // a editer for the user to create a new message
-    console.log('editor_page_msg',this.state.editor_page_msg)
     return <Editor msg={this.state.editor_page_msg} saved={true}/>
   }
 
   send_msg = async (props) => {
     var msg = props.msg;
     msg.usr = this.state.login_portal_props.username;
-    console.log('App.js file send message',msg)
     try{
       if(!msg._id){
         msg._id =  await ds.setMsgToDB(msg);
@@ -281,9 +275,11 @@ class App extends Component {
   render = () => {
     // console.log('---------- RENDER ----------')
     // console.log('Method',this.state.at_page)
-    // console.log('promise loading?',this.state.promise_status)
     var content = (
-        <h1> This page is not implemented. </h1>
+        <div className='container'>
+          <h1> This page is not implemented. </h1>
+          <h2> You shouldn't see this page, if you do, please contact the admin.</h2>
+        </div>
     )
     if(this.state.at_page in this.render_methods){
       content = this.render_methods[this.state.at_page]();
@@ -292,24 +288,52 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <div className='row d-flex align-items-center'>
-            <div className='col-sm-4'>
-              <div className="container icon">
-               <img className='icon' src="main.png" alt="icon" />
+            <div className='col-sm-6'>
+              <div className="container icon-container">
+                <a href="#docs" onClick={() => this.switchPage(AtPageEnum.DOCS)}>
+                  <img className='icon' href="#docs" src="main.png" alt="icon" />
+                </a>
+                <h1 className='website-title'> Message Bottles </h1>
               </div>
             </div>
-            <div className='col-sm-8'>
-              <div className='container'>
-                  <h1> Message Bottles </h1>
-              </div>
-            </div>
-          </div>
-          <div className='container'>
-            <a className="btn btn-primary" onClick={() => this.goHome()}>Go Home</a>
           </div>
         </header>
+        <div className='container'>
+          { this.state.at_page === AtPageEnum.LOGIN? null :(<a className="btn btn-primary HomeBtn" onClick={() => this.goHome()}>Go Home</a>)}
+        </div>
         <div className="container-fluid App-main">
           {content}
         </div>
+        <div className='container only-for-phone'>
+          <div className='col-sm-12'>
+            {SHORT_INTRO}
+          </div>
+        </div>
+        <footer className="App-footer">
+            <div className='container nav'>
+              <div className='col-sm-4'>
+                <div className='container txt'>
+                  <a href="#docs" onClick={() => (this.switchPage(AtPageEnum.DOCS))}> How to use the website </a>
+                </div>
+              </div>
+              <div className='col-sm-4'>
+                <div className='container txt'>
+                  <a href="#faq" onClick={() => (this.switchPage(AtPageEnum.FAQ))}> FAQ </a>
+                </div>
+              </div>
+              <div className='col-sm-4'>
+                <div className='container github'>
+                  <a href="https://github.com/Hidden-Hyperparameter/message-website"> Connect Us at Github </a>
+                  <img src="https://github.com/favicon.ico" alt="github" /> 
+                </div>
+              </div>
+            </div>
+            <div className='container ack'>
+              <p className='ack-react'>
+                The website is powered by React.
+              </p>
+            </div>
+        </footer>
       </div>
     )
   }

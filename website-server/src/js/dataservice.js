@@ -1,5 +1,5 @@
-import NotificationService,{NotificationEnum} from "./notification"
-import HttpService from "./httpservice"
+import NotificationService,{NotificationEnum} from "./Notification"
+import HttpService from "./HttpService"
 import { ConnectionStates } from "mongoose"
 let ns = new NotificationService()
 let http = new HttpService()
@@ -89,7 +89,7 @@ class DataService { // singleton
             }
             return some._id
         }
-        console.log('In function setMsgtoDB',msg._id);
+        // console.log('In function setMsgtoDB',msg._id);
         try{
             var l = await http.getById(msg._id)
         }catch(err){

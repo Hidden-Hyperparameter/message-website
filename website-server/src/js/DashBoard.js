@@ -1,7 +1,8 @@
+import "../css/DashBoard.css"
 import React,{Component} from "react";
-import Msg, { MsgConfig } from "./my_msg";
-import NotificationService,{NotificationEnum} from "./notification";
-import { LOADING_PAGE } from "./common";
+import Msg, { MsgConfig } from "./Msg";
+import NotificationService,{NotificationEnum} from "./Notification";
+import { LOADING_PAGE } from "./Common";
 
 let ns = new NotificationService();
 class DashBoard extends Component {
@@ -13,8 +14,8 @@ class DashBoard extends Component {
             msg_btn_type: props.msg_btn_type,
         }
         this.show_reply_num = true;
-        if(!props.show_reply_num){
-            this.show_reply_num = false;
+        if(props.show_reply_num === false){
+            this.show_reply_num = false; // default false
         }
     }
 
@@ -27,7 +28,6 @@ class DashBoard extends Component {
     }
 
     onDashBoardLoaded = (props) => {
-        console.log('loaded:',props)
         this.setState(props)
     }
 
@@ -39,18 +39,24 @@ class DashBoard extends Component {
         }
         var out = []
         for(var i = 0; i < my_msges.length; i++){
-            console.log('item',i,'key is',my_msges[i]._id)
             out.push(
-                <li key={my_msges[i]._id}>
-                    <Msg embed_msg={my_msges[i]} havebtn={true} key={my_msges[i]._id} buttonType={this.state.msg_btn_type}></Msg>
+                <li key={my_msges[i]._id} className="Msg">
+                    <Msg embed_msg={my_msges[i]} havebtn={true} key={my_msges[i]._id} buttonType={this.state.msg_btn_type} show_reply_num={this.show_reply_num}></Msg>
+                </li>
+            )
+        }
+        if(my_msges.length === 0){
+            out.push(
+                <li key="no-msg" className="no-msg">
+                    <h2> You have no these kind of messages. </h2>
                 </li>
             )
         }
         return (
         <div className="container-fluid App-main">
             <h1> {this.state.header} </h1>
-            <a className="btn btn-primary" onClick={() => ns.postNotification(NotificationEnum.EDIT_MSG,new MsgConfig())}>Compose a New Message</a>
-            <ul>
+            <a className="btn btn-primary header-btn" onClick={() => ns.postNotification(NotificationEnum.EDIT_MSG,new MsgConfig())}>Compose a New Message</a>
+            <ul className="dashboard-list">
                 {out}
             </ul>
         </div>

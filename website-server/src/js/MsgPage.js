@@ -1,10 +1,10 @@
 import "../css/MsgPage.css"
 import React,{Component} from "react";
-import Msg from "./my_msg";
-import SmartInputBox from "./smart_input";
-import NotificationService,{NotificationEnum} from "./notification";
-import DataService from "./dataservice";
-import { LOADING_PAGE } from "./common";
+import Msg from "./Msg";
+import SmartInputBox from "./SmartImput";
+import NotificationService,{NotificationEnum} from "./Notification";
+import DataService from "./DataService";
+import { LOADING_PAGE } from "./Common";
 let ns = new NotificationService();
 let ds = new DataService();
 
@@ -17,7 +17,7 @@ class MsgPage extends Component {
 
         // bind
         this.onSendReply = this.onSendReply.bind(this);
-        this.onLeaveReplyCenter = this.onLeaveReplyCenter.bind
+        this.onLeaveReplyCenter = this.onLeaveReplyCenter.bind(this);
 
     }
 
@@ -30,7 +30,7 @@ class MsgPage extends Component {
     }
 
     onMsgPageLoaded = (data) => {
-        console.log('on reciving:',data)
+        // console.log('on reciving:',data)
         this.setState({
             msg:data
         })
@@ -67,7 +67,7 @@ class MsgPage extends Component {
                     <label>Write your thoughts here...</label>
                 </div>
                 <div className='col-sm-8'>
-                    <SmartInputBox  type="text" id="reply-content" name="content"/>
+                    <textarea type="text" id="reply-content" name="content"> </textarea>
                 </div>
                 </div>
                 <div className='row'>
@@ -84,8 +84,9 @@ class MsgPage extends Component {
     }
 
     onLeaveReplyCenter = () => {
-        if(document.getElementById("reply-content").value !== ""){
-            alert("You have unsent content in the reply box. Are you sure to leave? Your content will be lost.");
+        var input_val = document.getElementById("reply-content").value
+        if(input_val !== "" && input_val !== ' '){
+            if (!window.confirm("You have unsent content in the reply box. Are you sure to leave? Your content will be lost.")) return;
         }
         ns.postNotification(NotificationEnum.BACK_TO_MAIN)
     }
@@ -100,6 +101,8 @@ class MsgPage extends Component {
         }
         var msg = this.state.msg;
         ns.postNotification(NotificationEnum.SAVE_REPLY_TO_DB, {msg: msg, rep: rep});
+        // then empty the input box
+        document.getElementById('reply-content').value = ""
     }
 
 }

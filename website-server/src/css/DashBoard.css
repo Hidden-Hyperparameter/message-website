@@ -1,0 +1,17 @@
+.container-fluid.App-main ul.dashboard-list li.no-msg h2 {
+    margin-top: 100px;
+    margin-bottom: 10px;
+    font-weight: lighter;
+    font-size: 1.5em;
+}
+
+@media screen and (max-width: 1000px) {
+    .container-fluid.App-main a.btn.btn-primary.header-btn {
+        font-size: 30px;
+    }    
+
+    .container-fluid.App-main ul.dashboard-list li.Msg .container.card .row.align-items-center .col-2 a.btn img {
+        width: 50px;
+        height: auto;
+    }
+}

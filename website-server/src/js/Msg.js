@@ -1,6 +1,6 @@
 import React, {Component} from "react";
-import NotificationService,{NotificationEnum} from "./notification";
-import "../css/my_msg.css"
+import NotificationService,{NotificationEnum} from "./Notification";
+import "../css/Msg.css"
 
 let ns = new NotificationService();
 
@@ -30,8 +30,8 @@ class Msg extends Component {
         // set up properties
         this.havebtn = true
         if(!props.havebtn){this.havebtn = false}
-        this.noreply = false
-        if(props.noreply){this.noreply = true}
+        this.show_reply_num = false
+        if(props.show_reply_num){this.show_reply_num = true}
 
         this.btn = null
         if(this.havebtn){
@@ -70,15 +70,37 @@ class Msg extends Component {
         if(!this.state.display){
             return null
         }
+        if(!this.state.content || !this.state.last_modified){
+            return (
+                <div className="container">
+                    <h1>An error occured when loading the message</h1>
+                    <p>Please contain the admin to report the bug.</p>
+                </div>
+            )
+        }
         var common = (
-            <div className="row">
-                    {this.btn}
-                    <div className="col-3">
-                        <label>Content:</label>
+            <div className="row align-items-center">
+                {this.btn}
+                <div className="col-10">
+                    <div className="row">
+                        <div className="col-3">
+                            <label>Content:</label>
+                        </div>
+                        <div className="col-7">
+                            <p>{this.state.content}</p>
+                        </div>
                     </div>
-                    <div className="col-7">
-                        <p>{this.state.content}</p>
-                    </div>
+                    {
+                        !this.show_reply_num ? null :(<div className="row">
+                            <div className="col-3">
+                                <label>Reply num:</label>
+                            </div>
+                            <div className="col-9">
+                                <p>{this.state.reply_list.length}</p>
+                            </div> 
+                        </div>)
+                    }
+                </div>
             </div>
         )
         if(this.havebtn){ // these are small cards
@@ -99,14 +121,6 @@ class Msg extends Component {
                         <p>{Msg.DateToString(this.state.last_modified)}</p>
                     </div> 
                 </div>
-                {this.noreply ? null :(<div className="row">
-                    <div className="col-3">
-                        <label>Reply num:</label>
-                    </div>
-                    <div className="col-9">
-                        <p>{this.state.reply_list.length}</p>
-                    </div> 
-                </div>)}
             </div>
         )
     }

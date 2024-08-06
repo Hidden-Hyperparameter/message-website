@@ -18,6 +18,11 @@
     padding: 10px;
 }
 
+.App .container-fluid.App-main .container.card .row {
+    margin: 0;
+    padding: 0;
+}
+
 
 .App .container-fluid.App-main .container.card .row .col-2 a.btn.btn-secondary{
     background-color:yellowgreen;
@@ -35,7 +40,6 @@
     font-size: 20px;
     /*bold*/
     font-weight: bold;
-    margin: 4px 2px;
     margin-left: 8px;
 }
 
@@ -46,4 +50,23 @@
 .App .container.card .row .col-7 {
     padding: 0;
     text-align: left;
+}
+
+@media screen and (max-width: 1000px) {
+    ul.dashboard-list li.Msg .container.card {
+        margin: 0;
+        min-width: 100%;
+    }
+
+    ul.dashboard-list li.Msg .container.card .row.align-items-center .col-2 a.btn.btn-secondary {
+        font-size: 23px;
+    }
+
+    ul.dashboard-list li.Msg .container.card .row.align-items-center label {
+        font-size: 32px;
+    }
+
+    ul.dashboard-list li.Msg .container.card .row.align-items-center p {
+        font-size: 28px;
+    }
 }

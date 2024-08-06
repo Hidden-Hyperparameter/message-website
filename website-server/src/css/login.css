@@ -1,8 +1,14 @@
 .LoginPortal .container.card {
+    background-color: #f8f9fa;
     max-width: 500px;
     margin-top: 20px;
     padding-top: 20px;
     padding-bottom: 20px;
+}
+
+.LoginPortal .container.card h1 {
+    margin-bottom: 5px;
+    padding: 0;
 }
 
 .LoginPortal .container.card .row .col-sm-12 label{
@@ -16,4 +22,8 @@
 .LoginPortal .container.card .row.buttons button {
     width: 50%;
 
+}
+
+@media screen and (max-width: 1000px) {
+    
 }

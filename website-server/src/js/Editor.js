@@ -1,10 +1,10 @@
 import "../css/Editor.css"
 import React,{Component} from "react";
-import Msg, {MsgConfig} from "./my_msg";
-import SmartInputBox from "./smart_input";
-import DataService from "./dataservice";
-import NotificationService,{NotificationEnum} from "./notification";
-import { LOADING_PAGE } from "./common";
+import Msg, {MsgConfig} from "./Msg";
+import SmartInputBox from "./SmartImput";
+import DataService from "./DataService";
+import NotificationService,{NotificationEnum} from "./Notification";
+import { LOADING_PAGE } from "./Common";
 
 let ds = new DataService();
 let ns = new NotificationService();
@@ -26,7 +26,7 @@ class Editor extends Component{
     }
 
     componentDidMount = () => {
-        ns.addObserver(NotificationEnum.EDITOR_LOAD_MSG, this, (data) => {  console.log('NOTIFICATION RECIEVED FOR EDITOR')
+        ns.addObserver(NotificationEnum.EDITOR_LOAD_MSG, this, (data) => {
           this.setState({
             embed_msg: data.msg,
             saved: data.saved
@@ -43,14 +43,12 @@ class Editor extends Component{
         //   return LOADING_PAGE;
         // }
         return (
-            <div className="container-fluid App-main">
+            <div className="container-fluid App-main Editor">
                 <h1> Compose Message </h1>
-                <a className="btn btn-primary" onClick={() => ns.postNotification(NotificationEnum.TO_UNPUBLISHED_PAGE)}>Edit Old Messages</a>
+                <a className="btn btn-primary header-btn" onClick={() => ns.postNotification(NotificationEnum.TO_UNPUBLISHED_PAGE)}>Edit Old Messages</a>
                 <div className='row'>
-                  <div className='col-sm-2'>
-                    <label>Content:</label>
-                  </div>
                   <div className='col-sm-10'>
+                    <h2>Content:</h2>
                     <SmartInputBox  type="text" id="content" name="content" value={this.state.embed_msg.content}/>
                   </div>
                 </div>
@@ -89,13 +87,13 @@ class Editor extends Component{
           embed_msg: result,
           saved: true
         })
-        console.log('The new embed message is', result)
+        // console.log('The new embed message is', result)
       }
     
-      onClickPublish = () => {
-        this.setDetailsAndSend(true)
-        alert('Your message is published. Redirecting to main page...')
-        ns.postNotification(NotificationEnum.BACK_TO_MAIN);
+      onClickPublish = async () => {
+        await this.setDetailsAndSend(true)
+        alert('Your message is published. Redirecting to your message page...')
+        ns.postNotification(NotificationEnum.VIEW_MSG,this.state.embed_msg)
       }
     
       onClickSave = () => {

@@ -1,9 +1,46 @@
-.container-fluid.App-main .row .col-sm-10 textarea {
+.container-fluid.App-main.Editor .row .col-sm-10 {
+    display: flex;
+    align-items: top;
+    margin-left: 10%;
+}
+
+.container-fluid.App-main.Editor .row .col-sm-10 h2 {
+    text-align: right;
+    margin-right: 40px;
+}
+
+.container-fluid.App-main.Editor .row .col-sm-10 textarea {
     width: 80%;
+    margin-left: 0;
     height: 100px;
 }
 
-.container-fluid.App-main .row .col-sm-3 button {
+.container-fluid.App-main.Editor .row .col-sm-3 button {
     width: 100px;
     border-radius: 7px;
+}
+
+@media screen and (max-width: 1000px) { 
+
+    .container-fluid.App-main.Editor .row .col-sm-3 {
+        width: 50%;
+        min-width: 50%;
+        margin-top: 20px;
+    }
+
+    .container-fluid.App-main.Editor .row .col-sm-3 {
+        width: 50%;
+        min-width: 50%;
+        margin-top: 20px;
+    }
+
+    .container-fluid.App-main.Editor .row .col-sm-3 button {
+        min-width: 50%;
+        font-size: 25px;
+    }
+
+    .container-fluid.App-main.Editor .row .col-sm-10  textarea{
+        font-size: 20px; 
+    }
+
 }

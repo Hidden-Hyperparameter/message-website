@@ -14,7 +14,8 @@
 } */
 
 .App-header {
-  background-color: #cecece;
+  /* background-color: #cecece; */
+  background: linear-gradient(90deg, rgb(158, 158, 158) 0%, rgb(255, 255, 255) 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,28 +24,65 @@
   color: white;
 }
 
-.App-header .row {
+.App-header .row.d-flex.align-items-center {
   margin-top: 20px;
+  margin-bottom: 20px;
   width: 100%;
+  padding: 0;
 }
 
-.App-header .row .col-sm-4 .icon img{
+.App-header .row .col-sm-6 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.App-header .row .col-sm-6 .container.icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.App-header .row .col-sm-6 img{
+  text-align: center;
   width: 100px;
-  height: 100px;
+  height: auto;
   border-radius: 10%;
-  margin-right: 20%;
+  margin-right: 20px;
 }
 
-.App-header .row .col-sm-8 h1{
-  font-size: 50px;
+.App-header .row .col-sm-6 h1.website-title{
+  font-size: 2.5rem; /* Adjust size as needed */
+  font-weight: bold;
+  color: #333; /* Adjust color as needed */
+  text-align: center;
   margin: 0;
   padding: 0;
-  text-align: left;
+  /* font-family: 'Ubuntu', serif, sans-serif; */
 }
 
 .App-header .container a.btn.btn-primary {
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+.App .container.only-for-phone {
+  display: none;
+}
+
+
+.App a.btn.btn-primary.HomeBtn {
+  background-color: #333;
+  color: white;
+  border: 3px solid #333;
+  border-radius: 10%;
+  text-align: center;
+  margin-top : 30px;
+  padding: 3px;
+}
+
+.App-main {
+  min-height: 400px;
 }
 
 .App-main a.btn.btn-primary {
@@ -55,16 +93,19 @@
   color: #61dafb;
 }
 
-.App-footer .card {
+.card.container.Docs {
   margin-top: 30px;
   border: none;
   box-shadow: 0 0 0 1px rgba(0,0,0,.15), 0 2px 3px 0 rgba(0,0,0,.1);
 }
-.App-footer .card h2 {
+.card.container.Docs h2 {
   margin-top: 10px;
+
 }
-.App-footer .card p {
+.card.container.Docs p {
     text-align: left;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 @keyframes App-logo-spin {
@@ -84,21 +125,183 @@
   font-family: 'Courier New', Courier, monospace;
 }
 
-.App-main .row.thirdrow.align-items-center .col-sm-8  {
-  margin-left: 16.7%;
+.App-main .container.bottle{
+  text-align: center;
 }
 
-.App-main .row.thirdrow.align-items-center a.btn.btn-primary{
+.App-main .container.bottle a.btn.btn-primary{
+  margin-right: 20%;
+  padding: 0;
+  border-radius: 10%;
   background-color: white;
   border: none;
-  border-radius: 10%;
-  text-align: center;
-  margin-top : 30px;
-  padding: 0;
+  display: block;
 }
 
-.App-main .row.thirdrow.align-items-center a.btn.btn-primary img{
-  width:100px;
-  max-width:100px;
+.App-main .container.bottle a.btn.btn-primary img{
+  max-width: 300px;
   border-radius: 10%;
+}
+
+.App-main .container.bottle a.btn.btn-primary label{
+  display: block;
+  color: black;
+  font-size: 1.5rem;
+}
+
+.App-main h1.welcome-msg {
+  margin-top: 20px;
+}
+
+.App-main .container.main-page-btns{
+  margin-left: 0;
+  border: 3px solid gainsboro;
+  position: relative;
+  max-width: 200px;
+  display: block;
+  padding: 0;
+  border-radius: 20px;
+}
+
+.App-main .container.main-page-btns a.btn.btn-primary{
+  font-size: 25px;
+  white-space: normal;
+  width: 100%;
+  color: #333;
+  background-color: inherit;
+  text-align: center;
+  border: none;
+  padding: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid gainsboro;
+}
+
+.App-main .container.main-page-btns a.btn.btn-primary:hover{
+ background-color: gainsboro;
+}
+
+
+.App-footer {
+  margin-top: 30px;
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  display: block;
+}
+
+.App-footer .container.nav {
+  font-size: 19px;
+  text-align: center;
+}
+
+.App-footer .container.nav .container.txt a{
+  color: white;
+}
+
+.App-footer .container.nav .container.github {
+  text-align: center;
+}
+
+.App-footer .container.nav .container.github a {
+  color: white;
+}
+
+.App-footer .container.nav .container.github img {
+  filter: invert(1);
+  width: 30px;
+  margin-left: 10px;
+}
+
+.App-footer .container.ack p {
+  font-family: 'Ubuntu';
+  font-size: 13px;
+  margin-top: 20px;
+  text-align: center;
+  margin-bottom: 0;
+  padding-bottom: 5px;
+}
+
+/* Set up for mobile phone */
+@media screen and (max-width: 1000px) {
+  h1 {
+    font-size: 70px;
+  }
+
+  .App-header .row.d-flex.align-items-center .col-sm-6{
+   min-width: 100%;
+  }
+
+  .App-header .row.d-flex.align-items-center .col-sm-6 .container.icon-container img.icon {
+    min-width: 200px;
+  }
+
+  .App-header .row.d-flex.align-items-center .col-sm-6 .container.icon-container h1.website-title {
+    font-size: 70px;
+  }
+
+  .App-main h1.welcome-msg {
+    font-size: 80px;
+  }
+
+  .App-main .container.main-page-btns{
+    max-width: 200px;
+    border-radius: 20px;
+  }
+  
+  .App-main .container.main-page-btns a.btn.btn-primary{
+    font-size: 30px;
+    width: 100%;
+    padding-top: 10px;
+  }
+  
+  .App-main .container.bottle a.btn.btn-primary{
+    margin-right: 10%;
+  }
+  
+  .App-main .container.bottle a.btn.btn-primary img{
+    max-width: 100%;
+  }
+  
+  .App-main .container.bottle a.btn.btn-primary label{
+    font-size: 30px;
+  }
+
+  .App .container a.btn.btn-primary.HomeBtn {
+    font-size: 30px;
+    padding: 10px;
+  }
+
+  .App .container.only-for-phone {
+    padding: 0;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    max-width: 100%;
+    display: block;
+  }
+
+  .App .container.only-for-phone .card.container.Docs {
+    margin-right: 0 ;
+    padding-top: 30px;
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .App .container.only-for-phone .card.container.Docs h2 {font-size: 60px;}
+  .App .container.only-for-phone .card.container.Docs p {font-size: 40px;}
+  .App .container.only-for-phone .card.container.Docs h4 {font-size: 50px;}
+  
+  .App-footer .container.nav .col-sm-4 .container {
+    font-size: 30px;
+    padding: 0;
+  }
+
+  .App-footer .container.ack p.ack-react {
+    font-size: 20px;
+    padding: 0;
+  }
 }

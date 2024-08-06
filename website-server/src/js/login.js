@@ -1,8 +1,8 @@
-import "../css/login.css";
+import "../css/Login.css";
 import React,{Component} from "react";
-import NotificationService,{NotificationEnum} from "./notification";
-import DataService from "./dataservice";
-import DOCUMENTATION from "./docs";
+import NotificationService,{NotificationEnum} from "./Notification";
+import DataService from "./DataService";
+import SHORT_INTRO from "./Docs";
 var ns = new NotificationService();
 var ds = new DataService();
 
@@ -32,6 +32,7 @@ class LoginPortal extends Component {
       <div className="LoginPortal">
         <div className="container card">
             <h1> Login/Sign Up </h1>
+            <hr/>
             <div className='row d-flex align-items-center'>
             <div className='col-sm-12'>
               <label>Username:</label>
@@ -55,11 +56,7 @@ class LoginPortal extends Component {
         </div>
     </div>
         )
-        ans.push ( // footer
-          <footer className="App-footer">
-          {DOCUMENTATION}
-        </footer>
-        );
+        ans.push(SHORT_INTRO)
         return ans;
     }
     
