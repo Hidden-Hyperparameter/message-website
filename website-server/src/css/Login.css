@@ -25,5 +25,7 @@
 }
 
 @media screen and (max-width: 1000px) {
-    
+    .App .container-fluid.App-main .container.disappear-on-phone {
+        display: none;
+    }
 }

@@ -31,7 +31,7 @@ class LoginPortal extends Component {
         ans.push(
       <div className="LoginPortal">
         <div className="container card">
-            <h1> Login/Sign Up </h1>
+            <h2> Login/Sign Up </h2>
             <hr/>
             <div className='row d-flex align-items-center'>
             <div className='col-sm-12'>
@@ -56,7 +56,11 @@ class LoginPortal extends Component {
         </div>
     </div>
         )
-        ans.push(SHORT_INTRO)
+        ans.push(
+            <div className="container disappear-on-phone">
+                {SHORT_INTRO}
+            </div>
+        )
         return ans;
     }
     
