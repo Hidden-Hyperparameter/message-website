@@ -80,6 +80,25 @@ class DataService { // singleton
         return x
     }
 
+
+    getRepliedByOthers = async (usr) => {
+        var messages = await this.getMyPublicDataFromDB(usr)
+        var read_msg_list = (await http.getUserInfo(usr)).read_msg_list
+        // console.log('read_msg_list',read_msg_list)
+        // console.log('messages',messages)
+        var out = []
+        for(var i = 0; i < messages.length; i++){
+            var index = read_msg_list[messages[i]._id]
+            // console.log('index',index)
+            // console.log('messages[i].reply_list.length',messages[i].reply_list.length)
+            if(index === undefined || index === null || messages[i].reply_list.length > index){
+                out.push(messages[i])
+            }
+        }
+        // console.log('out',out)
+        return out
+    }
+
     setMsgToDB = async (msg) => {
         if(!msg._id){ // a new message without ID, DB will give it an id
             try{
@@ -129,6 +148,16 @@ class DataService { // singleton
     updateUserInfo = async (usr,msg_id) => {
         try{
             http.updateUserInfo(usr,msg_id)
+        }catch(err){
+            console.error(err)
+        }
+    }
+
+    updateUserRead = async (msg,usr) => {
+        // console.log('updateUserRead is called:',msg,usr)
+        if(msg.usr !== usr) {return;} // only update the read list of the user who sent the message
+        try{
+            await http.updateUserRead(usr,msg._id,msg.reply_list.length)
         }catch(err){
             console.error(err)
         }

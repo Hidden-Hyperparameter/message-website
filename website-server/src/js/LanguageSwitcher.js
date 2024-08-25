@@ -8,9 +8,9 @@ class LanguageSwitcher {
     switchLanguage(language) {
         if (language === 'en' || language === 'zh') {
             this.language = language;
-            console.log(`Language switched to ${language}`);
+            // console.log(`Language switched to ${language}`);
         } else {
-            console.log(`Unsupported language: ${language}`);
+            // console.log(`Unsupported language: ${language}`);
         }
     }
 
@@ -25,7 +25,7 @@ class LanguageSwitcher {
             else return message;
         }
         else {
-            console.log(`Unsupported language: ${this.language}`);
+            // console.log(`Unsupported language: ${this.language}`);
             return message;
         }
     }

@@ -98,11 +98,11 @@ app.delete('/deleteReplyById', async function(req, res) {
         var reply = await ReplySchema.findById(id)
         if(!reply) throw "Reply is Not In Database!"
         // remove the reply from the message's reply_list
-        console.log('targeting',reply)
-        console.log(id)
+        // console.log('targeting',reply)
+        // console.log(id)
         var parent_msg = await MessageSchema.findOne({reply_list: { $elemMatch: { $eq: new ObjectId(id) } } });
         if(!parent_msg) throw "This reply doesn't reply to a message!"
-        console.log('parent_msg',parent_msg)
+        // console.log('parent_msg',parent_msg)
         await MessageSchema.updateOne({_id: parent_msg._id}, {$pull: {reply_list: new ObjectId(id)}});
         log += ('Remove reply from message: ' + parent_msg)
         // remove the reply from the user's replied_questions
@@ -171,8 +171,8 @@ app.get('/getUserInfo', async function(req, res) {
         var data = await UserSchema.findOne({usr: usr});
         await UserSchema.populate(data, { path: 'replied_questions', model: 'MessageSchema' });
         await MessageSchema.populate(data.replied_questions, { path: 'reply_list', model: 'ReplySchema' });
-        console.log('getUserInfo, input',usr)
-        console.log('getUserInfo, result',data)
+        // console.log('getUserInfo, input',usr)
+        // console.log('getUserInfo, result',data)
         if(!data)throw 'No User Found!'
         res.send(data)
     }catch (err) {
@@ -225,12 +225,24 @@ app.put('/updateUserInfo', async function(req, res) {
     try{
         const usr = req.query.usr
         const msg_id = req.query.msg_id
-        console.log('input param',usr,msg_id)
+        // console.log('input param',usr,msg_id)
         var data = await UserSchema.updateOne({usr: usr}, {$addToSet: {replied_questions: new ObjectId(msg_id)}});
-        console.log('result',data)
+        // console.log('result',data)
         res.send(data)
     }catch (err) {
         res.status(400).send({error: 'Unable to updateUserInfo: ' + err})
+    }
+})
+
+app.put('/UpdateUserRead',async function(req, res) {
+    try{
+        const usr = req.query.usr
+        const msg_id = req.query.msg_id
+        const index = req.query.index
+        var data = await UserSchema.updateOne({usr: usr}, {$set: {["read_msg_list."+msg_id]: index}});
+        res.send(data)
+    }catch (err) {
+        res.status(400).send({error: 'Unable to UpdateUserRead: ' + err})
     }
 })
 

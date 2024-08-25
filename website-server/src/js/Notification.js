@@ -10,6 +10,7 @@ class NotificationEnum {
     static SAVE_MSG_TO_DB = "SAVE_MSG_TO_DB";
     static SAVE_REPLY_TO_DB = "SAVE_REPLY_TO_DB";
     static LOAD_GENERAL = "LOAD_GENERAL";
+    static NOTICE_LOADED = "NOTICE_LOADED";
 }
 
 let instance = null
@@ -24,6 +25,7 @@ class NotificationService{
     }
 
     postNotification = (notifyName, data) => {
+        // console.log(notifyName,data)
         let obs = observers[notifyName];
         if(!obs){
             return;
@@ -35,11 +37,13 @@ class NotificationService{
     }
 
     addObserver = (notifyName , observer, callBack) => {
+        // console.log('addObserver:',notifyName,observer,callBack)
         let obs = observers[notifyName];
         if(!obs){
             observers[notifyName] = [];
         }
         observers[notifyName].push({observer: observer, callBack: callBack});
+        // console.log('Finished. observers:',observers)
     }
 
     removeObserver = (observer, notifyName) => {

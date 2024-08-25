@@ -1,6 +1,7 @@
+import { LanguageSwitcher,ls } from "./LanguageSwitcher";
 const LOADING_PAGE = (
     <div className="container-fluid App-main">
-        <h1> Loading data, please hang on... </h1>
+        <h1> {ls.Trans('loading')} </h1>
     </div>
 )
 

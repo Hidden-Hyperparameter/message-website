@@ -111,6 +111,19 @@ class HttpService {
         return promise;
     }
 
+    updateUserRead = (usr,msg_id,index) => {
+        var promise = new Promise((resolve,reject) => {
+            fetch(this.base_uri + 'UpdateUserRead' + '?usr=' + usr + '&msg_id=' + msg_id + '&index=' + index,{
+                method: 'PUT',
+            }).then(response => {
+                resolve(response.json());
+            }).catch(err => {
+                reject(err);
+            })
+        })
+        return promise;
+    }
+
     addReplyToMsg = (msg_id,reply_id) => {
         var promise = new Promise((resolve,reject) => {
             fetch(this.base_uri + 'AddReplyToMsg' + '?msg_id=' + msg_id + '&reply_id=' + reply_id,{

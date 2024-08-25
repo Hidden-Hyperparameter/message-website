@@ -11,6 +11,8 @@ import SHORT_INTRO, {DOCS,FAQ} from './Docs';
 
 import { LOADING_PAGE,PromiseStatusEnum } from './Common';
 import {ls} from './LanguageSwitcher.js';
+import NoticeList from './NoticeList.js';
+import Notice from './Notice.js';
 
 var ds = new DataService();
 var ns = new NotificationService();
@@ -31,14 +33,14 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      at_page: AtPageEnum.LOGIN,
-      // at_page: AtPageEnum.MAIN, // DEBUG ONLY
-      login_portal_props: new LoginPortalProps(),
-      // login_portal_props: { // DEBUG ONLY
-      //   username: "debug",
-      //   password: "debug",
-      //   login_ed: true,
-      // },
+      // at_page: AtPageEnum.LOGIN,
+      at_page: AtPageEnum.MAIN, // DEBUG ONLY
+      // login_portal_props: new LoginPortalProps(),
+      login_portal_props: { // DEBUG ONLY
+        username: "debug",
+        password: "debug",
+        login_ed: true,
+      },
       msg_page_msg:undefined,
       editor_page_msg: new MsgConfig(),
     }
@@ -65,14 +67,18 @@ class App extends Component {
     this.getMyUnpublicMsg = this.getMyUnpublicMsg.bind(this);
     this.selectMsgToView = this.selectMsgToView.bind(this);
     this.onNotifyLogin = this.onNotifyLogin.bind(this);    
+    ns.addObserver(NotificationEnum.LOAD_GENERAL,this,this.load) // this has to be early
+  
   }
 
   componentDidMount = () => {
     ns.addObserver(NotificationEnum.NOTIFY_LOGIN, this, this.onNotifyLogin);
     ns.addObserver(NotificationEnum.EDIT_MSG, this, this.switchToEdit);
     ns.addObserver(NotificationEnum.VIEW_MSG,this,(msg_dict) => {
-      this.switchPage(AtPageEnum.MSG);
-      this.setState({msg_page_msg:msg_dict});
+      ds.updateUserRead(msg_dict,this.state.login_portal_props.username).then((res) => {
+        this.switchPage(AtPageEnum.MSG);
+        this.setState({msg_page_msg:msg_dict});
+      },(err) => {alert('Sorry, our database server encounters some errors:' + err + '. Please report it to admin.'); this.goHome()})
       // console.log('view message msg_dict',msg_dict)
     });
     ns.addObserver(NotificationEnum.BACK_TO_MAIN,this,this.goHome);
@@ -84,7 +90,12 @@ class App extends Component {
   }
 
   load = () => {
+      // throw 'Not implemented yet.'
+      console.log('APP load:',this.state.at_page)
       switch(this.state.at_page){
+        case AtPageEnum.MAIN:
+          this.fetch_notices();
+          break;
         case AtPageEnum.MYSENT:
           this.render_mysent_fetch();
           break;
@@ -117,6 +128,7 @@ class App extends Component {
   }
 
   switchPage = (page) => {
+    console.log('page switched to ',page)
     this.setState({at_page: page});
   }
 
@@ -145,6 +157,13 @@ class App extends Component {
 
 // ############### MAIN PAGE ################
 
+  fetch_notices = async () => {
+    console.log('APP: fetcha notice is called.')
+    // throw 'Not implemented yet.'
+    var replied_by_others = await ds.getRepliedByOthers(this.state.login_portal_props.username); // list of message
+    ns.postNotification(NotificationEnum.NOTICE_LOADED,{messages: replied_by_others});
+  }
+
   render_main = () => {
     if(!this.state.login_portal_props.login_ed){
       this.switchPage(AtPageEnum.LOGIN);
@@ -163,7 +182,7 @@ class App extends Component {
             <a className="btn btn-primary" onClick={() => {this.switchToEdit(new MsgConfig())}}>Compose or Edit Message</a>
           </div>
         </div>
-        <div className='col-sm-8'>
+        <div className='col-sm-4'>
           <div className='container bottle'>
             <a className='btn btn-primary' onClick={() => {this.switchPage(AtPageEnum.MSG)}}>
               <img src="./main-page.png" alt="bottle"/>
@@ -171,9 +190,15 @@ class App extends Component {
             </a>
           </div>
         </div>
+        <div className='col-sm-4'>
+          <div className='container'>
+            <NoticeList/>
+          </div>
+        </div>
       </div>
       
     )
+    ns.postNotification(NotificationEnum.NOTICE_LOADED,null)
     return ans
   }
 
@@ -181,12 +206,14 @@ class App extends Component {
 // ############### MY SENT PAGE ################
 
   render_mysent_fetch =  () => {
+    console.log('render_mysent_fetch')
     ds.getMyPublicDataFromDB(this.state.login_portal_props.username).then(((my_msges) => {
       ns.postNotification(NotificationEnum.DASHBOARD_LOADED,{messages: my_msges});
     }),(err) => {alert('Sorry, our database server encounters some errors:' + err + '. Please report it to admin.'); this.goHome()})  
   }
 
   render_mysent = () => {
+    // console.log('render_mysent')
       return <DashBoard header="My Sent Messages" msg_btn_type="View" show_reply_num={true}/>
   }
 
