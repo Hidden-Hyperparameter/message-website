@@ -58,7 +58,7 @@ class LoginPortal extends Component {
         )
         ans.push(
             <div className="container disappear-on-phone">
-                {SHORT_INTRO}
+                {SHORT_INTRO()}
             </div>
         )
         return ans;
