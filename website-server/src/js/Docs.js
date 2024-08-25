@@ -1,17 +1,17 @@
 import {ls} from './LanguageSwitcher.js';
 import React from 'react';
 
-const DOCS = (
-    <h1>
-        About the Website
-    </h1>
-)
+function DOCS () {
+    return (<h1>
+       {ls.Trans('docs')}
+    </h1>)
+}
 
-const FAQ = (
+function FAQ() { return (
     <h1>
-        FAQ
+        {ls.Trans('faq')}
     </h1>
-)
+)}
 
 function SHORT_INTRO(){
     return (

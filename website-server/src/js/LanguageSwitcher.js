@@ -3,6 +3,8 @@ import LanguageZH from "../languages/zh.json";
 class LanguageSwitcher {
     constructor() {
         this.language = 'en'; // Default language is English
+        this.switchLanguage = this.switchLanguage.bind(this);
+        this.Trans = this.Trans.bind(this);
     }
 
     switchLanguage(language) {

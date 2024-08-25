@@ -1,10 +1,9 @@
 import { LanguageSwitcher,ls } from "./LanguageSwitcher";
-const LOADING_PAGE = (
-    <div className="container-fluid App-main">
+function LOADING_PAGE () {
+    return (<div className="container-fluid App-main">
         <h1> {ls.Trans('loading')} </h1>
-    </div>
-)
-
+    </div>)
+}
 class PromiseStatusEnum {
     static NOT_BEGUN = "not_begun";
     static LOADING = "loading";

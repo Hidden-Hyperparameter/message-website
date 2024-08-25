@@ -7,12 +7,26 @@
     "ok": "OK",
     "docs": "Docs",
     "faq": "FAQ",
+    "welcome":"Welcome,",
+    "howtouse":"How to use the website",
     "cogit": "Connect Us at Github",
     "ack_react": "The website is powered by React.",
     "loading": "Loading data, please hang on...",
     "nomessage": "You have no these kind of messages.",
+    "nonotice": "You have no notifications.",
+    "gohome": "Go Home",
+    "clicktoget":"Click To Get New Messages",
+    "noticelist":"Notice List",
+
     "doc1_title": "What's this website for?",
     "doc1_content": "Do you have the experience that you are in low mood, but you find it hard to tell it to your family or friends? Well, welcome to <b>Message Bottles</b>, a safe space for sharing your thoughts and emotions <i>anonymously</i>. <br/><br/> Here, you can freely express the feelings and struggles that are hard to voice elsewhere. Your words will drift like a message in a bottle, to be randomly discovered and responded to by others. <br/><br/> Together, let's support each other through life's ups and downs!",
     "doc2_title": "For Developers",
-    "doc2_content": ""
+    "doc2_content": "",
+
+    "mysent":"My Sent Messages",
+    "myreply":"My Replied Messages",
+    "toedit":"Compose or Edit Message",
+    "compose":"Compose a New Message",
+    "editold":"Edit Old Messages",
+    "content":"Content:"
 }

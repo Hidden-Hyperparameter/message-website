@@ -5,6 +5,7 @@ import SmartInputBox from "./SmartImput";
 import DataService from "./DataService";
 import NotificationService,{NotificationEnum} from "./Notification";
 import { LOADING_PAGE } from "./Common";
+import {ls} from "./LanguageSwitcher";
 
 let ds = new DataService();
 let ns = new NotificationService();
@@ -44,11 +45,11 @@ class Editor extends Component{
         // }
         return (
             <div className="container-fluid App-main Editor">
-                <h1> Compose Message </h1>
-                <a className="btn btn-primary header-btn" onClick={() => ns.postNotification(NotificationEnum.TO_UNPUBLISHED_PAGE)}>Edit Old Messages</a>
+                <h1> {ls.Trans('compose')} </h1>
+                <a className="btn btn-primary header-btn" onClick={() => ns.postNotification(NotificationEnum.TO_UNPUBLISHED_PAGE)}>{ls.Trans('editold')}</a>
                 <div className='row'>
                   <div className='col-sm-10'>
-                    <h2>Content:</h2>
+                    <h2>{ls.Trans('content')}</h2>
                     <SmartInputBox  type="text" id="content" name="content" value={this.state.embed_msg.content}/>
                   </div>
                 </div>

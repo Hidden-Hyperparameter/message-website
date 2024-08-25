@@ -40,7 +40,7 @@ class MsgPage extends Component {
         var msg = this.state.msg;
         if(!msg) {
             ns.postNotification(NotificationEnum.LOAD_GENERAL);
-            return LOADING_PAGE;
+            return LOADING_PAGE();
         }
         var out = []
         out.push(

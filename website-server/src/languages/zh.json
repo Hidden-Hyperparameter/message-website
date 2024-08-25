@@ -7,10 +7,24 @@
     "ok": "确定",
     "docs": "文档",
     "faq": "常见问题",
+    "welcome":"欢迎，",
+    "howtouse":"如何使用本网站",
     "cogit": "在 Github 上联系我们",
     "ack_react": "本网站由 React 驱动。",
     "loading": "正在玩命加载，请稍等...",
     "nomessage": "您没有这类消息。",
+    "nonotice": "您没有通知。",
+    "clicktoget":"点击获取漂流瓶信息",
+    "gohome": "回家",
+    "noticelist":"通知列表",
     "doc1_title": "这个网站是干什么的？",
-    "doc2_title": "对开发者"
+    "doc2_title": "对开发者",
+
+    "mysent":"我发送的消息",
+    "myreply":"我回复的消息",
+    "toedit":"编写或者修改消息",
+    "compose":"编写新消息",
+    "editold":"修改旧消息",
+    "content":"内容："
+
 }

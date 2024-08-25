@@ -3,7 +3,7 @@ import React,{Component} from "react";
 import Msg, { MsgConfig } from "./Msg";
 import NotificationService,{NotificationEnum} from "./Notification";
 import { LOADING_PAGE } from "./Common";
-
+import {ls} from "./LanguageSwitcher";
 let ns = new NotificationService();
 class DashBoard extends Component {
     constructor(props){
@@ -35,7 +35,7 @@ class DashBoard extends Component {
         var my_msges = this.state.messages;
         if(!my_msges){
             ns.postNotification(NotificationEnum.LOAD_GENERAL,null)
-            return LOADING_PAGE
+            return LOADING_PAGE()
         }
         var out = []
         for(var i = 0; i < my_msges.length; i++){
@@ -55,7 +55,7 @@ class DashBoard extends Component {
         return (
         <div className="container-fluid App-main">
             <h1> {this.state.header} </h1>
-            <a className="btn btn-primary header-btn" onClick={() => ns.postNotification(NotificationEnum.EDIT_MSG,new MsgConfig())}>Compose a New Message</a>
+            <a className="btn btn-primary header-btn" onClick={() => ns.postNotification(NotificationEnum.EDIT_MSG,new MsgConfig())}>{ls.Trans('compose')}</a>
             <ul className="dashboard-list">
                 {out}
             </ul>

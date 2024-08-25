@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import NotificationService,{NotificationEnum} from "./Notification";
+import {ls} from "./LanguageSwitcher";
 import "../css/Msg.css"
 
 let ns = new NotificationService();
@@ -96,7 +97,7 @@ class Msg extends Component {
                 <div className="col-10">
                     <div className="row">
                         <div className="col-3">
-                            <label>Content:</label>
+                            <label>{ls.Trans('content')}</label>
                         </div>
                         <div className="col-7">
                             <p>{Msg.display_content(this.state.content)}</p>

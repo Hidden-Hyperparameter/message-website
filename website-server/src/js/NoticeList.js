@@ -2,6 +2,7 @@ import React,{Component} from "react";
 import NotificationService,{NotificationEnum} from "./Notification";
 import Notice from "./Notice";
 import { LOADING_PAGE } from "./Common";
+import { ls } from "./LanguageSwitcher";
 let ns = new NotificationService();
 
 class NoticeList extends Component{
@@ -37,7 +38,7 @@ class NoticeList extends Component{
         if (!this.state.unread_messages){
             ns.postNotification(NotificationEnum.LOAD_GENERAL,null)
             // throw 'NoticeList: No messages loaded'
-            return LOADING_PAGE
+            return LOADING_PAGE()
         }
         var my_msges = this.state.unread_messages;
         var out = []
@@ -51,13 +52,13 @@ class NoticeList extends Component{
         if(my_msges.length === 0){
             out.push(
                 <li key="no-notice" className="no-notice">
-                    <h2> You have no notifications. </h2>
+                    <h2>{ls.Trans('nonotice')} </h2>
                 </li>
             )
         }
         return (
             <div className="container-fluid card">
-                <h1>Notice List</h1>
+                <h1>{ls.Trans('noticelist')}</h1>
                 {out}
             </div>
         )

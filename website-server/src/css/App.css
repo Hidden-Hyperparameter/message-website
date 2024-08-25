@@ -326,6 +326,10 @@
   gap: 15px;
 }
 
+.button-group button.btn.btn-primary.lang-btn[valid="false"]{
+  background-color: gray;
+}
+
 .btn {
   padding: 5px 10px;
   font-size: 0.7em;

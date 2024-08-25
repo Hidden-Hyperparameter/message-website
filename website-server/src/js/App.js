@@ -33,14 +33,14 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      // at_page: AtPageEnum.LOGIN,
-      at_page: AtPageEnum.MAIN, // DEBUG ONLY
-      // login_portal_props: new LoginPortalProps(),
-      login_portal_props: { // DEBUG ONLY
-        username: "debug",
-        password: "debug",
-        login_ed: true,
-      },
+      at_page: AtPageEnum.LOGIN,
+      // at_page: AtPageEnum.MAIN, // DEBUG ONLY
+      login_portal_props: new LoginPortalProps(),
+      // login_portal_props: { // DEBUG ONLY
+      //   username: "debug",
+      //   password: "debug",
+      //   login_ed: true,
+      // },
       msg_page_msg:undefined,
       editor_page_msg: new MsgConfig(),
     }
@@ -52,8 +52,8 @@ class App extends Component {
       [AtPageEnum.MSG]: this.render_msg_page,
       [AtPageEnum.MYSENT]: this.render_mysent,
       [AtPageEnum.MYREPLY]: this.render_myreply,
-      [AtPageEnum.DOCS]: () => {return DOCS},
-      [AtPageEnum.FAQ]: () => {return FAQ}
+      [AtPageEnum.DOCS]: () => {return DOCS()},
+      [AtPageEnum.FAQ]: () => {return FAQ()}
     }
     //bind
     for(var key in this.render_methods){
@@ -110,6 +110,8 @@ class App extends Component {
           break;
         case AtPageEnum.EDIT:
           ns.postNotification(NotificationEnum.EDITOR_LOAD_MSG,{msg: new MsgConfig(), saved: false});
+          break;
+        case AtPageEnum.LOGIN:
           break;
         default:
           throw "Shouldn't call this!"
@@ -171,22 +173,22 @@ class App extends Component {
     }
     var ans = []
     ans.push (
-      <h1 className='welcome-msg'> Welcome, <special>{this.state.login_portal_props.username}</special> !</h1>
+      <h1 className='welcome-msg'> {ls.Trans('welcome')}<special>{this.state.login_portal_props.username}</special> !</h1>
     ) // title
     ans.push(
       <div className='container row'>
         <div className='col-sm-4'> {/* Left side bar, three buttons*/}
           <div className='container main-page-btns'>
-            <a className="btn btn-primary" onClick={() => {this.switchPage(AtPageEnum.MYSENT)}}> My Sent Messages </a>
-            <a className="btn btn-primary" onClick={() => {this.switchPage(AtPageEnum.MYREPLY)}}> Replied Messeges </a>
-            <a className="btn btn-primary" onClick={() => {this.switchToEdit(new MsgConfig())}}>Compose or Edit Message</a>
+            <a className="btn btn-primary" onClick={() => {this.switchPage(AtPageEnum.MYSENT)}}>{ls.Trans('mysent')} </a>
+            <a className="btn btn-primary" onClick={() => {this.switchPage(AtPageEnum.MYREPLY)}}> {ls.Trans('myreply')} </a>
+            <a className="btn btn-primary" onClick={() => {this.switchToEdit(new MsgConfig())}}>{ls.Trans('toedit')}</a>
           </div>
         </div>
         <div className='col-sm-4'>
           <div className='container bottle'>
             <a className='btn btn-primary' onClick={() => {this.switchPage(AtPageEnum.MSG)}}>
               <img src="./main-page.png" alt="bottle"/>
-              <label> Click To Get New Messages </label>
+              <label> {ls.Trans('clicktoget')} </label>
             </a>
           </div>
         </div>
@@ -214,7 +216,7 @@ class App extends Component {
 
   render_mysent = () => {
     // console.log('render_mysent')
-      return <DashBoard header="My Sent Messages" msg_btn_type="View" show_reply_num={true}/>
+      return <DashBoard header={ls.Trans('mysent')} msg_btn_type="View" show_reply_num={true}/>
   }
 
 // ############### MY REPLY PAGE ################
@@ -226,7 +228,7 @@ class App extends Component {
   }
 
   render_myreply =  () => {
-    return <DashBoard header="My Replied Messages" msg_btn_type="View" show_reply_num={true}/>
+    return <DashBoard header={ls.Trans('myreply')} msg_btn_type="View" show_reply_num={true}/>
   }
 
 // ############### MSG PAGE ################
@@ -324,10 +326,10 @@ class App extends Component {
                 <div className="language-switcher-container">
                   <h1 className="website-title">{ls.Trans('mb')}</h1>
                   <div className="button-group">
-                      <button className="btn btn-primary" onClick={() => { ls.switchLanguage('en'); alert("Switched to English."); this.switchPage(this.state.at_page); }}>
+                      <button className="btn btn-primary lang-btn" onClick={() => { ls.switchLanguage('en'); alert("Switched to English."); this.switchPage(this.state.at_page); }} valid={String(ls.language !== 'en')}>
                           English
                       </button>
-                      <button className="btn btn-primary" onClick={() => { ls.switchLanguage('zh'); alert("变成中文啦！"); this.switchPage(this.state.at_page); }}>
+                      <button className="btn btn-primary lang-btn" onClick={() => { ls.switchLanguage('zh'); alert("变成中文啦！"); this.switchPage(this.state.at_page); }} valid={String(ls.language !== 'zh')}>
                           中文
                       </button>
                   </div>
@@ -337,7 +339,7 @@ class App extends Component {
           </div>
         </header>
         <div className='container'>
-          { this.state.at_page === AtPageEnum.LOGIN? null :(<a className="btn btn-primary HomeBtn" onClick={() => this.goHome()}>Go Home</a>)}
+          { this.state.at_page === AtPageEnum.LOGIN? null :(<a className="btn btn-primary HomeBtn" onClick={() => this.goHome()}>{ls.Trans('gohome')}</a>)}
         </div>
         <div className="container-fluid App-main">
           {content}
@@ -351,24 +353,24 @@ class App extends Component {
             <div className='container nav'>
               <div className='col-sm-4'>
                 <div className='container txt'>
-                  <a href="#docs" onClick={() => (this.switchPage(AtPageEnum.DOCS))}> How to use the website </a>
+                  <a href="#docs" onClick={() => (this.switchPage(AtPageEnum.DOCS))}> {ls.Trans('howtouse')} </a>
                 </div>
               </div>
               <div className='col-sm-4'>
                 <div className='container txt'>
-                  <a href="#faq" onClick={() => (this.switchPage(AtPageEnum.FAQ))}> FAQ </a>
+                  <a href="#faq" onClick={() => (this.switchPage(AtPageEnum.FAQ))}> {ls.Trans('faq')} </a>
                 </div>
               </div>
               <div className='col-sm-4'>
                 <div className='container github'>
-                  <a href="https://github.com/Hidden-Hyperparameter/message-website"> Connect Us at Github </a>
+                  <a href="https://github.com/Hidden-Hyperparameter/message-website"> {ls.Trans('cogit')} </a>
                   <img src="https://github.com/favicon.ico" alt="github" /> 
                 </div>
               </div>
             </div>
             <div className='container ack'>
               <p className='ack-react'>
-                The website is powered by React.
+                {ls.Trans('ack_react')}
               </p>
             </div>
         </footer>
