@@ -66,6 +66,18 @@ class Msg extends Component {
         return date.getFullYear() + "-" + (date.getMonth() + 1).toString().padStart(2, '0') + "-" + date.getDate().toString().padStart(2, '0') + " " + date.getHours().toString().padStart(2, '0') + ":" + date.getMinutes().toString().padStart(2, '0') + ":" + date.getSeconds().toString().padStart(2, '0')
     }
 
+    static display_content = (content) => {
+        var out = []
+        for(var i = 0; i < content.length; i++){
+            if(content[i] === '\n'){
+                out.push(<br/>)
+            }else{
+                out.push(content[i])
+            }
+        }
+        return out
+    }
+
     render = () => {
         if(!this.state.display){
             return null
@@ -87,7 +99,7 @@ class Msg extends Component {
                             <label>Content:</label>
                         </div>
                         <div className="col-7">
-                            <p>{this.state.content}</p>
+                            <p>{Msg.display_content(this.state.content)}</p>
                         </div>
                     </div>
                     {
