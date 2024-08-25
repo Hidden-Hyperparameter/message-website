@@ -1,0 +1,16 @@
+{
+    "mb": "漂流瓶",
+    "login": "登录",
+    "signup": "注册",
+    "usrnm": "用户名",
+    "pwd": "密码",
+    "ok": "确定",
+    "docs": "文档",
+    "faq": "常见问题",
+    "cogit": "在 Github 上联系我们",
+    "ack_react": "本网站由 React 驱动。",
+    "loading": "正在玩命加载，请稍等...",
+    "nomessage": "您没有这类消息。",
+    "doc1_title": "这个网站是干什么的？",
+    "doc2_title": "对开发者"
+}

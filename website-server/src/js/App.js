@@ -10,6 +10,7 @@ import Editor  from './Editor';
 import SHORT_INTRO, {DOCS,FAQ} from './Docs';
 
 import { LOADING_PAGE,PromiseStatusEnum } from './Common';
+import {ls} from './LanguageSwitcher.js';
 
 var ds = new DataService();
 var ns = new NotificationService();
@@ -293,7 +294,17 @@ class App extends Component {
                 <a href="#docs" onClick={() => this.switchPage(AtPageEnum.DOCS)}>
                   <img className='icon' href="#docs" src="main.png" alt="icon" />
                 </a>
-                <h1 className='website-title'> Message Bottles </h1>
+                <div className="language-switcher-container">
+                  <h1 className="website-title">{ls.Trans('mb')}</h1>
+                  <div className="button-group">
+                      <button className="btn btn-primary" onClick={() => { ls.switchLanguage('en'); alert("Switched to English."); this.switchPage(this.state.at_page); }}>
+                          English
+                      </button>
+                      <button className="btn btn-primary" onClick={() => { ls.switchLanguage('zh'); alert("变成中文啦！"); this.switchPage(this.state.at_page); }}>
+                          中文
+                      </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -306,7 +317,7 @@ class App extends Component {
         </div>
         <div className='container only-for-phone'>
           <div className='col-sm-12'>
-            {SHORT_INTRO}
+            {SHORT_INTRO()}
           </div>
         </div>
         <footer className="App-footer">
