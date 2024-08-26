@@ -35,7 +35,7 @@ class Editor extends Component{
     }
 
     componentWillUnmount = () => {
-        ns.removeObserver(this, NotificationEnum.EDITOR_LOAD_MSG);
+        ns.removeObserver(this, NotificationEnum.EDITOR_LOAD_MSG, this.identity);
     }
 
     render = () => {

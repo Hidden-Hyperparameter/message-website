@@ -17,14 +17,15 @@ class DashBoard extends Component {
         if(props.show_reply_num === false){
             this.show_reply_num = false; // default false
         }
+        this.identity = 'DashBoard';
     }
 
     componentDidMount = () => {
-        ns.addObserver(NotificationEnum.DASHBOARD_LOADED, this, this.onDashBoardLoaded);
+        ns.addObserver(NotificationEnum.DASHBOARD_LOADED, this, this.onDashBoardLoaded,this.identity);
     }
 
     componentWillUnmount = () => {
-        ns.removeObserver(this, NotificationEnum.DASHBOARD_LOADED);
+        ns.removeObserver(this, NotificationEnum.DASHBOARD_LOADED,this.identity);
     }
 
     onDashBoardLoaded = (props) => {

@@ -12,25 +12,26 @@ class MsgPage extends Component {
     constructor(props){
         super(props);
         this.state = {
-            msg: props.msg
+            msg: props.msg,
         }
+        this.have_posted = false;
 
         // bind
         this.onSendReply = this.onSendReply.bind(this);
         this.onLeaveReplyCenter = this.onLeaveReplyCenter.bind(this);
-
+        this.identity = 'MsgPage';
     }
 
     componentDidMount = () => {
-        ns.addObserver(NotificationEnum.MSG_PAGE_LOADED, this, this.onMsgPageLoaded);
+        ns.addObserver(NotificationEnum.MSG_PAGE_LOADED, this, this.onMsgPageLoaded,this.identity);
     }
 
     componentWillUnmount = () => {
-        ns.removeObserver(this, NotificationEnum.MSG_PAGE_LOADED);
+        ns.removeObserver(this, NotificationEnum.MSG_PAGE_LOADED,this.identity);
     }
 
     onMsgPageLoaded = (data) => {
-        // console.log('on reciving:',data)
+        console.log('MSG PAGE LOADED')
         this.setState({
             msg:data
         })
@@ -40,7 +41,8 @@ class MsgPage extends Component {
         var msg = this.state.msg;
         console.log("rendered message page.", msg)
         if(!msg) {
-            ns.postNotification(NotificationEnum.LOAD_GENERAL);
+            if(!this.have_posted)ns.postNotification(NotificationEnum.SELECT_MSG_TO_VIEW);
+            this.have_posted = true;
             return LOADING_PAGE();
         }
         var out = []

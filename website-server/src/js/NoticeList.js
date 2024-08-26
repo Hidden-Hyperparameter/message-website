@@ -12,13 +12,14 @@ class NoticeList extends Component{
         this.state = {
             unread_messages: undefined,
         }
+        this.identity = 'NoticeList';
     }
 
     componentDidMount = () => {
-        ns.addObserver(NotificationEnum.NOTICE_LOADED, this, this.onNoticeLoaded);
+        ns.addObserver(NotificationEnum.NOTICE_LOADED, this, this.onNoticeLoaded,this.identity);
     }
     componentWillUnmount = () => {
-        ns.removeObserver(this, NotificationEnum.NOTICE_LOADED);
+        ns.removeObserver(this, NotificationEnum.NOTICE_LOADED,this.identity);
     }
 
     onNoticeLoaded = (data) => {

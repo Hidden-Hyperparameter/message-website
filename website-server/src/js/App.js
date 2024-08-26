@@ -55,6 +55,7 @@ class App extends Component {
       [AtPageEnum.DOCS]: () => {return DOCS()},
       [AtPageEnum.FAQ]: () => {return FAQ()}
     }
+    this.identity = 'App';
     //bind
     for(var key in this.render_methods){
       this.render_methods[key] = this.render_methods[key].bind(this);
@@ -67,26 +68,26 @@ class App extends Component {
     this.getMyUnpublicMsg = this.getMyUnpublicMsg.bind(this);
     this.selectMsgToView = this.selectMsgToView.bind(this);
     this.onNotifyLogin = this.onNotifyLogin.bind(this);    
-    ns.addObserver(NotificationEnum.LOAD_GENERAL,this,this.load) // this has to be early
-  
-  }
-
-  componentDidMount = () => {
-    ns.addObserver(NotificationEnum.NOTIFY_LOGIN, this, this.onNotifyLogin);
-    ns.addObserver(NotificationEnum.EDIT_MSG, this, this.switchToEdit);
+    ns.addObserver(NotificationEnum.LOAD_GENERAL,this,this.load,this.identity) // this has to be early
+    ns.addObserver(NotificationEnum.NOTIFY_LOGIN, this, this.onNotifyLogin,this.identity);
+    ns.addObserver(NotificationEnum.EDIT_MSG, this, this.switchToEdit,this.identity);
     ns.addObserver(NotificationEnum.VIEW_MSG,this,(msg_dict) => {
       ds.updateUserRead(msg_dict,this.state.login_portal_props.username).then((res) => {
         this.switchPage(AtPageEnum.MSG);
         this.setState({msg_page_msg:msg_dict});
       },(err) => {alert('Sorry, our database server encounters some errors:' + err + '. Please report it to admin.'); this.goHome()})
       // console.log('view message msg_dict',msg_dict)
-    });
-    ns.addObserver(NotificationEnum.BACK_TO_MAIN,this,this.goHome);
-    ns.addObserver(NotificationEnum.TO_UNPUBLISHED_PAGE,this,() => {this.switchPage(AtPageEnum.UNPUBISHED_MSG_PAGE);});
-    ns.addObserver(NotificationEnum.SAVE_MSG_TO_DB,this,this.send_msg);
-    ns.addObserver(NotificationEnum.SAVE_REPLY_TO_DB,this,this.send_reply);
+    },this.identity);
+    ns.addObserver(NotificationEnum.BACK_TO_MAIN,this,this.goHome,this.identity);
+    ns.addObserver(NotificationEnum.TO_UNPUBLISHED_PAGE,this,() => {this.switchPage(AtPageEnum.UNPUBISHED_MSG_PAGE);},this.identity);
+    ns.addObserver(NotificationEnum.SAVE_MSG_TO_DB,this,this.send_msg,this.identity);
+    ns.addObserver(NotificationEnum.SAVE_REPLY_TO_DB,this,this.send_reply,this.identity);
+    ns.addObserver(NotificationEnum.SELECT_MSG_TO_VIEW,this,this.selectMsgToView,this.identity);
+  }
 
-    ns.addObserver(NotificationEnum.LOAD_GENERAL,this,this.load)
+  componentDidMount = () => {
+
+    // ns.addObserver(NotificationEnum.LOAD_GENERAL,this,this.load)
   }
 
   load = () => {
@@ -105,9 +106,9 @@ class App extends Component {
         case AtPageEnum.UNPUBISHED_MSG_PAGE:
           this.getMyUnpublicMsg();
           break;
-        case AtPageEnum.MSG:
-          this.selectMsgToView();
-          break;
+        // case AtPageEnum.MSG:
+        //   this.selectMsgToView();
+        //   break;
         case AtPageEnum.EDIT:
           ns.postNotification(NotificationEnum.EDITOR_LOAD_MSG,{msg: new MsgConfig(), saved: false});
           break;
@@ -119,14 +120,14 @@ class App extends Component {
     }
 
   componentWillUnmount = () => {
-    ns.removeObserver(this, NotificationEnum.NOTIFY_LOGIN);
-    ns.removeObserver(this, NotificationEnum.EDIT_MSG);
-    ns.removeObserver(this, NotificationEnum.VIEW_MSG);
-    ns.removeObserver(this, NotificationEnum.CHANGE_PAGE);
-    ns.removeObserver(this, NotificationEnum.TO_UNPUBLISHED_PAGE);
-    ns.removeObserver(this, NotificationEnum.SAVE_MSG_TO_DB);
-    ns.removeObserver(this, NotificationEnum.SAVE_REPLY_TO_DB);
-    ns.removeObserver(this, NotificationEnum.LOAD_GENERAL);
+    // ns.removeObserver(this, NotificationEnum.NOTIFY_LOGIN,this.identity);
+    // ns.removeObserver(this, NotificationEnum.EDIT_MSG,this.identity);
+    // ns.removeObserver(this, NotificationEnum.VIEW_MSG,this.identity);
+    // ns.removeObserver(this, NotificationEnum.CHANGE_PAGE,this.identity);
+    // ns.removeObserver(this, NotificationEnum.TO_UNPUBLISHED_PAGE,this.identity);
+    // ns.removeObserver(this, NotificationEnum.SAVE_MSG_TO_DB,this.identity);
+    // ns.removeObserver(this, NotificationEnum.SAVE_REPLY_TO_DB,this.identity);
+    // ns.removeObserver(this, NotificationEnum.LOAD_GENERAL,this.identity);
   }
 
   switchPage = (page) => {
@@ -234,6 +235,7 @@ class App extends Component {
 // ############### MSG PAGE ################
 
   selectMsgToView =  () => {
+    // console.log('Call selectMsgToView')
     ds.getOneOtherMsg(this.state.login_portal_props.username).then((msg) => {
       if(!msg){
         alert('There is no new message for you to view now. Redirecting to main page...');
