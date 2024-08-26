@@ -38,13 +38,14 @@ class MsgPage extends Component {
 
     render = () => {
         var msg = this.state.msg;
+        console.log("rendered message page.", msg)
         if(!msg) {
             ns.postNotification(NotificationEnum.LOAD_GENERAL);
             return LOADING_PAGE();
         }
         var out = []
         out.push(
-            <Msg embed_msg={msg} key={msg}></Msg>
+            <Msg embed_msg={msg} key={msg._id}></Msg>
         )
         out.push(
             <h2> Replies </h2>

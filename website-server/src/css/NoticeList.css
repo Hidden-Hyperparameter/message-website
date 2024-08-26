@@ -1,0 +1,16 @@
+.row .message-box {
+    width: 400px;
+    height: 400px;
+    overflow-y: auto;
+    background-color: #b8ecf7;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    border-radius: 20px;
+}
+.row .col-sm-10 {
+    align-items: top;
+    margin-left: 10%;
+    text-align: center;
+}
