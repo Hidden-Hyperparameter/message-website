@@ -24,8 +24,8 @@ class Notice extends Component{
     render_unread_msg = () => {
         return (
             <div>
-                <h2>Unread Message</h2>
-                <p>Your message <i>{Notice.abbrev(this.msg.content)}</i> get a new reply!</p>
+                <h4>Unread Message</h4>
+                <p>Your message <i>{Notice.abbrev(this.msg.content)}</i> got new replies!</p>
                 <a className="btn btn-primary" onClick={() => {ns.postNotification(NotificationEnum.VIEW_MSG, this.msg)}}>View</a>
             </div>
         )
@@ -38,7 +38,7 @@ class Notice extends Component{
                 content = this.render_unread_msg()
                 break;
             default:
-                content = <h2>Invalid Notice Type</h2>
+                content = <h4>Invalid Notice Type</h4>
         }
         return (
             <div className="container-fluid card">

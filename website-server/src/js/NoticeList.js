@@ -1,3 +1,4 @@
+import "../css/NoticeList.css"
 import React,{Component} from "react";
 import NotificationService,{NotificationEnum} from "./Notification";
 import Notice from "./Notice";
@@ -52,14 +53,18 @@ class NoticeList extends Component{
         if(my_msges.length === 0){
             out.push(
                 <li key="no-notice" className="no-notice">
-                    <h2>{ls.Trans('nonotice')} </h2>
+                    <h4>{ls.Trans('nonotice')} </h4>
                 </li>
             )
         }
         return (
-            <div className="container-fluid card">
-                <h1>{ls.Trans('noticelist')}</h1>
-                {out}
+            <div className='row'>
+                <div class="col-sm-10">
+                    <h2>{ls.Trans('noticelist')}</h2>
+                </div>
+                <div class="message-box">
+                    {out}
+                </div>
             </div>
         )
     }
