@@ -92,7 +92,7 @@ class DataService { // singleton
             // console.log('index',index)
             // console.log('messages[i].reply_list.length',messages[i].reply_list.length)
             if(index === undefined || index === null || messages[i].reply_list.length > index){
-                out.push(messages[i])
+                if(messages[i].reply_list.length > 0){out.push(messages[i])}
             }
         }
         // console.log('out',out)
