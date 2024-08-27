@@ -8,11 +8,11 @@ import DataService from './DataService';
 import DashBoard from './DashBoard';
 import Editor  from './Editor';
 import SHORT_INTRO, {DOCS,FAQ} from './Docs';
-
 import { LOADING_PAGE,PromiseStatusEnum } from './Common';
 import {ls} from './LanguageSwitcher.js';
 import NoticeList from './NoticeList.js';
 import Notice from './Notice.js';
+import DailyCheckIn from './DailyCheckIn.js';
 
 var ds = new DataService();
 var ns = new NotificationService();
@@ -337,6 +337,9 @@ class App extends Component {
                   </div>
                 </div>
               </div>
+            </div>
+            <div className='col-sm-6'>
+            { this.state.at_page === AtPageEnum.LOGIN? null : (<DailyCheckIn usr={this.state.login_portal_props.username}/>) }
             </div>
           </div>
         </header>

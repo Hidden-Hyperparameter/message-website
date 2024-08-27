@@ -111,6 +111,19 @@ class HttpService {
         return promise;
     }
 
+    updateUserCheckIn = (usr, cs_num) => {
+        var promise = new Promise((resolve,reject) => {
+            fetch(this.base_uri + 'UpdateUserCheckIn' + '?usr=' + usr + '&cs_num=' + cs_num,{
+                method: 'PUT',
+            }).then(response => {
+                resolve(response.json());
+            }).catch(err => {
+                reject(err);
+            })
+        })
+        return promise;
+    }
+
     updateUserRead = (usr,msg_id,index) => {
         var promise = new Promise((resolve,reject) => {
             fetch(this.base_uri + 'UpdateUserRead' + '?usr=' + usr + '&msg_id=' + msg_id + '&index=' + index,{

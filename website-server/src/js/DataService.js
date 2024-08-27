@@ -153,6 +153,14 @@ class DataService { // singleton
         }
     }
 
+    updateUserCheckIn = async (usr, cs_num) => {
+        try{
+            await http.updateUserCheckIn(usr, cs_num)
+        }catch(err){
+            console.error(err)
+        }
+    }
+
     updateUserRead = async (msg,usr) => {
         // console.log('updateUserRead is called:',msg,usr)
         if(msg.usr !== usr) {return;} // only update the read list of the user who sent the message
@@ -160,6 +168,16 @@ class DataService { // singleton
             await http.updateUserRead(usr,msg._id,msg.reply_list.length)
         }catch(err){
             console.error(err)
+        }
+    }
+
+    getUserDate = async (usr) => {
+        try{
+            var info = await http.getUserInfo(usr)
+            return [info.last_check_in_date, info.streak_check_in, info.chicken_soup_num]
+        } catch (err) {
+            console.error(err)
+            throw err
         }
     }
 
