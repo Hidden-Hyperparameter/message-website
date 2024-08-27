@@ -234,6 +234,25 @@ app.put('/updateUserInfo', async function(req, res) {
     }
 })
 
+app.put('/UpdateUserCheckIn', async function(req, res) {
+    try{
+        const usr = req.query.usr;
+        const cs_num = req.query.cs_num;
+        var user = await UserSchema.findOne({usr: usr});
+        if (!user) throw "What the ****? This user doesn't exist!";
+        const lastCheckInDate = user.last_check_in_date;
+        const streakCheckIn = user.streak_check_in;
+        const today = new Date().setHours(0, 0, 0, 0);
+        const lastCheckInDay = new Date(lastCheckInDate.toString()).setHours(0, 0, 0, 0);
+        const isConsecutive = ((today - lastCheckInDay) === 86400000);
+        const newStreakCheckIn = isConsecutive ? streakCheckIn + 1 : 1;
+        var data = await UserSchema.updateOne({usr: usr}, {$set: {last_check_in_date: new Date(), streak_check_in: newStreakCheckIn, chicken_soup_num: cs_num}});
+        res.send(data);
+    }catch (err) {
+        res.status(400).send({error: 'Unable to updateUserStreakCheckIn: ' + err});
+    }
+})
+
 app.put('/UpdateUserRead',async function(req, res) {
     try{
         const usr = req.query.usr
